@@ -1,316 +1,490 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тарифы обучения</title>
-    <style>
-        /* CSS RESET & CORE STYLES */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тарифы — Школа видеомонтажа и 3D-графики</title>
+<style>
+    /* ====== RESET & BASE ====== */
+    *, *::before, *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        /* PREMIUM SAAS DARK BACKGROUND WITH GRID LINES */
-        body {
-            background-color: #08090d;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: center top;
-            color: #ffffff;
-            padding: 60px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
+    :root {
+        --bg: #08090d;
+        --card-border: rgba(255, 255, 255, 0.06);
+        --accent-purple: #4d12e6;
+        --accent-teal: #2ec4b6;
+        --check-green: #2ecc71;
+        --gold: #ffb703;
+        --gold-border: rgba(255, 183, 3, 0.18);
+        --text-main: #f5f6fa;
+        --text-dim: rgba(235, 237, 245, 0.62);
+    }
 
-        /* BACKGROUND GLOW EFFECT SPHERES */
-        body::before, body::after {
-            content: "";
-            position: absolute;
-            width: 450px;
-            height: 450px;
-            border-radius: 50%;
-            filter: blur(150px);
-            z-index: -1;
-            opacity: 0.25;
-            pointer-events: none;
-        }
+    html {
+        scroll-behavior: smooth;
+    }
 
-        body::before {
-            background: radial-gradient(circle, #4d12e6 0%, transparent 70%);
-            top: -100px;
-            left: -100px;
-        }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                     "Helvetica Neue", Arial, sans-serif;
+        background-color: var(--bg);
+        color: var(--text-main);
+        min-height: 100vh;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
 
-        body::after {
-            background: radial-gradient(circle, #2ec4b6 0%, transparent 70%);
-            bottom: -100px;
-            right: -100px;
-        }
+    /* ====== BACKGROUND: GRID + GLOW SPHERES ====== */
+    .bg-grid {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image:
+            linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+        background-size: 40px 40px;
+        /* мягкое затухание сетки к краям */
+        -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 40%, transparent 100%);
+        mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 40%, transparent 100%);
+    }
 
-        /* GRADIENT PAGE TITLE */
-        h1.page-title {
-            font-size: 3rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 50px;
-            width: 100%;
-            max-width: 900px;
-            text-align: left;
-            font-weight: 900;
-            background: linear-gradient(135deg, #ffffff 40%, #8a8d98 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: fadeInDown 0.6s ease-out forwards;
-        }
+    .glow {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(150px);
+        opacity: 0.3;
+        z-index: 0;
+        pointer-events: none;
+    }
 
-        /* INDESTRUCTIBLE 2x2 GRID CONTAINER */
-        .tariff-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-        }
+    .glow--purple {
+        width: 560px;
+        height: 560px;
+        background: var(--accent-purple);
+        top: -180px;
+        left: -160px;
+    }
 
-        /* GLASSMORPHISM CARD PREMIUM STYLE */
+    .glow--teal {
+        width: 520px;
+        height: 520px;
+        background: var(--accent-teal);
+        bottom: -180px;
+        right: -140px;
+    }
+
+    /* ====== PAGE LAYOUT ====== */
+    .page {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 90px 24px 110px;
+    }
+
+    /* ====== TITLE ====== */
+    .page__eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 18px;
+        padding: 8px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 100px;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .page__title {
+        font-size: clamp(44px, 7vw, 76px);
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        line-height: 1.05;
+        text-align: center;
+        background: linear-gradient(180deg, #ffffff 0%, #8a8f9c 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 16px;
+    }
+
+    .page__subtitle {
+        font-size: 16px;
+        color: var(--text-dim);
+        text-align: center;
+        max-width: 520px;
+        margin-bottom: 64px;
+        line-height: 1.6;
+    }
+
+    /* ====== GRID: 2x2 on desktop, 1 column on mobile ====== */
+    .pricing {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 440px));
+        gap: 28px;
+        justify-content: center;
+        width: 100%;
+        max-width: 940px;
+    }
+
+    /* ====== CARD (Glassmorphism) ====== */
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 40px 36px 36px;
+        border-radius: 24px;
+        background:
+            linear-gradient(160deg,
+                rgba(255, 255, 255, 0.055) 0%,
+                rgba(255, 255, 255, 0.015) 45%,
+                rgba(255, 255, 255, 0.005) 100%);
+        border: 1px solid var(--card-border);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(36px);
+        animation: cardIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                    border-color 0.35s ease,
+                    box-shadow 0.35s ease;
+    }
+
+    /* задержки появления для каскадной анимации */
+    .card:nth-child(1) { animation-delay: 0.10s; }
+    .card:nth-child(2) { animation-delay: 0.22s; }
+    .card:nth-child(3) { animation-delay: 0.34s; }
+    .card:nth-child(4) { animation-delay: 0.46s; }
+
+    @keyframes cardIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(255, 255, 255, 0.14);
+        box-shadow:
+            0 24px 60px -20px rgba(77, 18, 230, 0.35),
+            0 8px 30px -12px rgba(0, 0, 0, 0.6);
+    }
+
+    .card--vip:hover {
+        box-shadow:
+            0 24px 60px -18px rgba(255, 183, 3, 0.30),
+            0 8px 30px -12px rgba(0, 0, 0, 0.6);
+    }
+
+    /* блик сверху карточки */
+    .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 10%;
+        right: 10%;
+        height: 1px;
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.28),
+            transparent);
+    }
+
+    /* ====== VIP-КАРТА ====== */
+    .card--vip {
+        border-color: var(--gold-border);
+        background:
+            linear-gradient(160deg,
+                rgba(255, 183, 3, 0.06) 0%,
+                rgba(255, 255, 255, 0.02) 50%,
+                rgba(255, 255, 255, 0.005) 100%),
+            linear-gradient(160deg,
+                rgba(255, 255, 255, 0.045) 0%,
+                rgba(255, 255, 255, 0.012) 100%);
+    }
+
+    .card--vip::before {
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 183, 3, 0.55),
+            transparent);
+    }
+
+    .card--vip .card__title { color: var(--gold); }
+    .card--vip .check { color: var(--gold); box-shadow: 0 0 14px rgba(255, 183, 3, 0.55); }
+    .card--vip .card__btn {
+        background: linear-gradient(135deg, #ffb703 0%, #ff9505 100%);
+        color: #1a1206;
+    }
+    .card--vip .card__btn:hover {
+        box-shadow: 0 10px 30px -8px rgba(255, 183, 3, 0.55);
+    }
+
+    /* ====== CONTENT CARD ====== */
+    .card__head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 6px;
+    }
+
+    .card__title {
+        font-size: 21px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .card__badge {
+        flex-shrink: 0;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #1a1206;
+        background: linear-gradient(135deg, #ffd768, #ffb703);
+        padding: 6px 12px;
+        border-radius: 100px;
+        margin-top: 2px;
+    }
+
+    .card__price {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        margin: 14px 0 26px;
+    }
+
+    .card__price-value {
+        font-size: 40px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(180deg, #ffffff, #9aa0ad);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .card--vip .card__price-value {
+        background: linear-gradient(180deg, #ffe08a, #ffb703);
+        -webkit-background-clip: text;
+        background-clip: text;
+    }
+
+    .card__price-currency {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text-dim);
+    }
+
+    .card__divider {
+        height: 1px;
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.10),
+            transparent);
+        margin-bottom: 26px;
+    }
+
+    /* ====== FEATURES ====== */
+    .card__features {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        flex-grow: 1;
+        margin-bottom: 32px;
+    }
+
+    .card__features li {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        font-size: 15px;
+        line-height: 1.55;
+        color: var(--text-dim);
+    }
+
+    /* галочка — чистый CSS + Unicode, неоновая тень */
+    .check {
+        flex-shrink: 0;
+        width: 22px;
+        height: 22px;
+        margin-top: 1px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(46, 204, 113, 0.12);
+        border: 1px solid rgba(46, 204, 113, 0.35);
+        color: var(--check-green);
+        font-size: 11px;
+        font-weight: 700;
+        box-shadow: 0 0 14px rgba(46, 204, 113, 0.55);
+        line-height: 1;
+    }
+
+    /* ====== BUTTON ====== */
+    .card__btn {
+        display: block;
+        width: 100%;
+        padding: 15px 20px;
+        border: none;
+        border-radius: 14px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-align: center;
+        cursor: pointer;
+        color: #ffffff;
+        background: linear-gradient(135deg, #6a2bf2 0%, #4d12e6 100%);
+        box-shadow: 0 10px 26px -10px rgba(77, 18, 230, 0.6);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+    }
+
+    .card__btn:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+        box-shadow: 0 14px 34px -10px rgba(77, 18, 230, 0.75);
+    }
+
+    .card__btn:active {
+        transform: translateY(0);
+    }
+
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 767px) {
+        .page {
+            padding: 64px 16px 80px;
+        }
+        .pricing {
+            grid-template-columns: 1fr;
+            gap: 22px;
+        }
         .card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 24px;
-            padding: 36px 30px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
-                        border-color 0.4s ease, 
-                        box-shadow 0.4s ease;
-            
-            /* INITIAL ANIMATION STATES */
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+            padding: 32px 26px 30px;
         }
+        .card__price-value {
+            font-size: 34px;
+        }
+    }
 
-        /* CASCADE ANIMATION DELAYS */
-        .card:nth-child(1) { animation-delay: 0.05s; }
-        .card:nth-child(2) { animation-delay: 0.15s; }
-        .card:nth-child(3) { animation-delay: 0.25s; }
-        .card:nth-child(4) { animation-delay: 0.35s; }
-
-        /* HOVER INTERACTION */
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(114, 18, 230, 0.4);
-            box-shadow: 0 15px 35px rgba(114, 18, 230, 0.15);
+    @media (prefers-reduced-motion: reduce) {
+        .card {
+            animation: none;
+            opacity: 1;
+            transform: none;
+            transition: none;
         }
-
-        /* LUXURY ACCENTS FOR "ВСЕ ВКЛЮЧЕНО" VIP CARD */
-        .card.vip {
-            border: 1px solid rgba(255, 183, 3, 0.18);
-            background: linear-gradient(135deg, rgba(255, 183, 3, 0.02) 0%, rgba(255, 255, 255, 0.005) 100%);
-        }
-        
-        .card.vip:hover {
-            border-color: rgba(255, 183, 3, 0.45);
-            box-shadow: 0 15px 35px rgba(255, 183, 3, 0.12);
-        }
-
-        .card-header {
-            margin-bottom: 24px;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: -0.01em;
-            color: #f5f5f7;
-        }
-
-        .card.vip .card-title {
-            color: #ffb703;
-        }
-
-        /* FEATURES LISTS WITH CUSTOM NEON ICONS */
-        .features-list {
-            list-style: none;
-            margin-bottom: 36px;
-            flex-grow: 1;
-        }
-
-        .features-list li {
-            font-size: 0.95rem;
-            color: #b0b3b8;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            line-height: 1.45;
-            transition: color 0.3s ease;
-        }
-
-        .card:hover .features-list li {
-            color: #e2e4e9;
-        }
-
-        /* THE CUSTOM GREEN GLOWING CHECKMARK */
-        .features-list li::before {
-            content: "✓";
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 18px;
-            height: 18px;
-            background-color: #2ec4b6;
-            color: #08090d;
-            border-radius: 50%;
-            font-size: 0.7rem;
-            font-weight: bold;
-            flex-shrink: 0;
-            margin-top: 2px;
-            box-shadow: 0 0 10px rgba(46, 196, 182, 0.4);
-        }
-
-        /* VIP CARD CUSTOM GOLD POINTS */
-        .card.vip .features-list li::before {
-            background-color: #ffb703;
-            box-shadow: 0 0 10px rgba(255, 183, 3, 0.4);
-        }
-
-        /* CARD BOTTOM FOOTER */
-        .card-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-top: auto;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .current-price {
-            font-size: 1.6rem;
-            font-weight: 800;
-            white-space: nowrap;
-            letter-spacing: -0.02em;
-            color: #ffffff;
-        }
-
-        /* SAAS PURPLE BUTTONS */
-        .btn-more {
-            background: linear-gradient(90deg, #4d12e6 0%, #7212e6 100%);
-            color: #ffffff;
-            text-decoration: none;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-            box-shadow: 0 4px 15px rgba(114, 18, 230, 0.25);
-            text-align: center;
-            flex-grow: 1;
-            white-space: nowrap;
-        }
-
-        .btn-more:hover {
-            box-shadow: 0 6px 22px rgba(114, 18, 230, 0.55);
-            transform: scale(1.02);
-        }
-
-        /* VIP CARD BRIGHT GOLD BUTTON */
-        .card.vip .btn-more {
-            background: linear-gradient(90deg, #ff9f1c 0%, #ffb703 100%);
-            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2);
-            color: #08090d;
-        }
-        
-        .card.vip .btn-more:hover {
-            box-shadow: 0 6px 22px rgba(255, 183, 3, 0.5);
-        }
-
-        /* KEYFRAME SAAS ANIMATIONS */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); filter: blur(5px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0px); }
-        }
-
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* MOBILE RESPONSIVE MEDIA BREAKPOINT */
-        @media (max-width: 768px) {
-            .tariff-grid {
-                grid-template-columns: 1fr; /* Switches directly to 1 vertical column */
-                max-width: 450px;
-            }
-            h1.page-title {
-                font-size: 2.3rem;
-                text-align: center;
-                margin-bottom: 35px;
-            }
-            body {
-                padding: 40px 16px;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
 
-    <h1 class="page-title">Тарифы</h1>
+    <!-- Фоновая сетка -->
+    <div class="bg-grid" aria-hidden="true"></div>
 
-    <main class="tariff-grid">
+    <!-- Декоративные сферы свечения -->
+    <div class="glow glow--purple" aria-hidden="true"></div>
+    <div class="glow glow--teal" aria-hidden="true"></div>
 
-        <!-- CARD 1: БАЗА АЕ -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">База АЕ</div>
-            </div>
-            <ul class="features-list">
-                <li>Обучение всем азам в AE</li>
-                <li>Проекты, которые не попали в мой пак</li>
-                <li>Сможете освоить базовые знания применения SFX\VFX</li>
-                <li>Готовые уроки, по которым вы будете обучаться</li>
-            </ul>
-            <div class="card-footer">
-                <div class="price-container">
-                    <span class="current-price">5 000 ₽</span>
+    <main class="page">
+        <span class="page__eyebrow">Обучение монтажу и 3D-графике</span>
+        <h1 class="page__title">ТАРИФЫ</h1>
+        <p class="page__subtitle">Выберите подходящий формат обучения — от базовых навыков до полного погружения в профессию.</p>
+
+        <div class="pricing">
+
+            <!-- КАРТА 1: БАЗА АЕ -->
+            <article class="card">
+                <div class="card__head">
+                    <h2 class="card__title">База АЕ</h2>
                 </div>
-                <a href="#" class="btn-more">Подробнее</a>
-            </div>
-        </div>
-
-        <!-- CARD 2: МОУШЕН -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Моушен</div>
-            </div>
-            <ul class="features-list">
-                <li>2 месяца обучения</li>
-                <li>Разборы моих личных проектов</li>
-                <li>Различные способы по поиску первых клиентов</li>
-            </ul>
-            <div class="card-footer">
-                <div class="price-container">
-                    <span class="current-price">10 000 ₽</span>
+                <div class="card__price">
+                    <span class="card__price-value">5 000</span>
+                    <span class="card__price-currency">₽</span>
                 </div>
-                <a href="#" class="btn-more">Подробнее</a>
-            </div>
-        </div>
+                <div class="card__divider"></div>
+                <ul class="card__features">
+                    <li><span class="check">✓</span><span>Обучение всем азам в AE</span></li>
+                    <li><span class="check">✓</span><span>Проекты, которые не попали в мой пак</span></li>
+                    <li><span class="check">✓</span><span>Сможете освоить базовые знания применения SFX\VFX</span></li>
+                    <li><span class="check">✓</span><span>Готовые уроки, по которым вы будете обучаться</span></li>
+                </ul>
+                <button class="card__btn" type="button">Подробнее</button>
+            </article>
 
+            <!-- КАРТА 2: МОУШЕН -->
+            <article class="card">
+                <div class="card__head">
+                    <h2 class="card__title">Моушен</h2>
+                </div>
+                <div class="card__price">
+                    <span class="card__price-value">10 000</span>
+                    <span class="card__price-currency">₽</span>
+                </div>
+                <div class="card__divider"></div>
+                <ul class="card__features">
+                    <li><span class="check">✓</span><span>2 месяца обучения</span></li>
+                    <li><span class="check">✓</span><span>Разборы моих личных проектов</span></li>
+                    <li><span class="check">✓</span><span>Различные способы по поиску первых клиентов</span></li>
+                </ul>
+                <button class="card__btn" type="button">Подробнее</button>
+            </article>
+
+            <!-- КАРТА 3: 3Д ГРАФИКА -->
+            <article class="card">
+                <div class="card__head">
+                    <h2 class="card__title">3Д Графика</h2>
+                </div>
+                <div class="card__price">
+                    <span class="card__price-value">15 000</span>
+                    <span class="card__price-currency">₽</span>
+                </div>
+                <div class="card__divider"></div>
+                <ul class="card__features">
+                    <li><span class="check">✓</span><span>Обучение базе в Blender</span></li>
+                    <li><span class="check">✓</span><span>Готовые уроки по моделированию</span></li>
+                    <li><span class="check">✓</span><span>Применение в AE</span></li>
+                </ul>
+                <button class="card__btn" type="button">Подробнее</button>
+            </article>
+
+            <!-- КАРТА 4: ВСЕ ВКЛЮЧЕНО (VIP) -->
+            <article class="card card--vip">
+                <div class="card__head">
+                    <h2 class="card__title">Все включено</h2>
+                    <span class="card__badge">VIP</span>
+                </div>
+                <div class="card__price">
+                    <span class="card__price-value">24 000</span>
+                    <span class="card__price-currency">₽</span>
+                </div>
+                <div class="card__divider"></div>
+                <ul class="card__features">
+                    <li><span class="check">✓</span><span>Получите все перечисленное выше</span></li>
+                    <li><span class="check">✓</span><span>Постоянная связь со мной</span></li>
+                    <li><span class="check">✓</span><span>Также помогу выйти на 1 клиента</span></li>
+                </ul>
+                <button class="card__btn" type="button">Подробнее</button>
+            </article>
+
+        </div>
+    </main>
+
+</body>
+</html>
