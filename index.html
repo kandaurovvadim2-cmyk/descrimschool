@@ -1,545 +1,288 @@
-Вот готовый HTML-код с CSS и JS, который полностью воссоздает дизайн с вашего изображения (включая эффект водной ряби, сетку, свечение и адаптивность).
-
-Просто сохраните этот код как `.html` файл и откройте в браузере.
-
-```html
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Тарифы — Школа видеомонтажа и 3D-графики</title>
-
-<!-- Шрифт -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"></noscript>
-
-<!-- Подключаем jQuery (нужен для плагина ряби) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Подключаем плагин ряби -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
-
+<!-- СТИЛИ МОДАЛЬНЫХ ОКОН -->
 <style>
-    /* ====== RESET & BASE ====== */
-    *, *::before, *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    :root {
-        --bg: #08090d;
-        --card-border: rgba(255, 255, 255, 0.06);
-        --accent-purple: #4d12e6;
-        --accent-teal: #2ec4b6;
-        --check-green: #2ecc71;
-        --gold: #ffb703;
-        --gold-border: rgba(255, 183, 3, 0.18);
-        --text-main: #f5f6fa;
-        --text-dim: rgba(235, 237, 245, 0.62);
-        --text-dim-strong: rgba(235, 237, 245, 0.82);
-    }
-
-    body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        background-color: var(--bg);
-        color: var(--text-main);
-        min-height: 100vh;
-        overflow-x: hidden;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-        /* Убираем скроллбар для красоты */
-        overflow-y: auto;
-    }
-
-    /* ====== ВОДНЫЙ ЭФФЕКТ (RIPPLE) ====== */
-    /* Этот слой будет искажаться. Он должен быть просто темным цветом */
-    .ripple-layer {
+    /* ====== МОДАЛЬНЫЕ ОКНА ====== */
+    .modal-overlay {
         position: fixed;
         inset: 0;
-        z-index: 0;
-        background-color: var(--bg);
-        pointer-events: none; /* Чтобы клики проходили сквозь фон */
-    }
-
-    /* ====== ФОН: СЕТКА И СВЕЧЕНИЕ (ПОВЕРХ ВОДЫ) ====== */
-    /* Они остаются четкими, так как лежат выше ripple-layer */
-    .bg-grid {
-        position: fixed;
-        inset: 0;
-        z-index: 1;
-        pointer-events: none;
-        background-image:
-            linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
-        background-size: 40px 40px;
-        -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 40%, transparent 100%);
-        mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 40%, transparent 100%);
-    }
-
-    .glow {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(150px);
-        opacity: 0.3;
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    .glow--purple {
-        width: 560px;
-        height: 560px;
-        background: var(--accent-purple);
-        top: -180px;
-        left: -160px;
-    }
-
-    .glow--teal {
-        width: 520px;
-        height: 520px;
-        background: var(--accent-teal);
-        bottom: -180px;
-        right: -140px;
-    }
-
-    /* ====== РАЗМЕТКА СТРАНИЦЫ ====== */
-    .page {
-        position: relative;
-        z-index: 10; /* Карточки поверх всего */
-        min-height: 100vh;
+        z-index: 1000;
+        background: rgba(8, 9, 13, 0.92);
+        backdrop-filter: blur(12px);
         display: flex;
-        flex-direction: column;
         align-items: center;
-        padding: 90px 24px 110px;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
-    /* ====== ЗАГОЛОВОК ====== */
-    .page__eyebrow {
-        display: inline-block;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: var(--text-dim);
-        margin-bottom: 18px;
-        padding: 8px 18px;
+    .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-window {
+        background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 100px;
-        background: rgba(255, 255, 255, 0.02);
-    }
-
-    .page__title {
-        font-size: clamp(48px, 8vw, 82px);
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        line-height: 1.05;
-        text-align: center;
-        color: #eef0f4;
-        background: linear-gradient(180deg, #ffffff 0%, #a0a5b0 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 16px;
-    }
-
-    .page__subtitle {
-        font-size: 16px;
-        color: var(--text-dim);
-        text-align: center;
-        max-width: 560px;
-        margin-bottom: 64px;
-        line-height: 1.6;
-    }
-
-    /* ====== СЕТКА: 2x2 НА ДЕСКТОПЕ, 1 КОЛОНКА НА МОБИЛЬНЫХ ====== */
-    .pricing {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 460px));
-        gap: 32px;
-        justify-content: center;
+        border-radius: 24px;
+        padding: 40px;
         width: 100%;
-        max-width: 980px;
-    }
-
-    /* ====== КАРТОЧКА ====== */
-    .card {
+        max-width: 600px;
         position: relative;
-        display: flex;
-        flex-direction: column;
-        padding: 44px 38px 40px;
-        border-radius: 26px;
-        background:
-            linear-gradient(160deg,
-                rgba(255, 255, 255, 0.06) 0%,
-                rgba(255, 255, 255, 0.015) 45%,
-                rgba(255, 255, 255, 0.005) 100%);
-        border: 1px solid var(--card-border);
-        -webkit-backdrop-filter: blur(22px);
-        backdrop-filter: blur(22px);
-        overflow: hidden;
-        animation: cardIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-                    border-color 0.35s ease,
-                    box-shadow 0.35s ease;
+        transform: scale(0.95);
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow: 0 20px 50px -15px rgba(0,0,0,0.6);
     }
 
-    .card:nth-child(1) { animation-delay: 0.10s; }
-    .card:nth-child(2) { animation-delay: 0.20s; }
-    .card:nth-child(3) { animation-delay: 0.30s; }
-    .card:nth-child(4) { animation-delay: 0.40s; }
-
-    @keyframes cardIn {
-        from { opacity: 0; transform: translateY(40px); }
-        to { opacity: 1; transform: translateY(0); }
+    .modal-overlay.active .modal-window {
+        transform: scale(1);
     }
 
-    .card:hover {
-        transform: translateY(-12px);
-        border-color: rgba(255, 255, 255, 0.14);
-        box-shadow:
-            0 26px 64px -20px rgba(77, 18, 230, 0.38),
-            0 8px 32px -12px rgba(0, 0, 0, 0.6);
-    }
-
-    .card--vip:hover {
-        box-shadow:
-            0 26px 64px -18px rgba(255, 183, 3, 0.32),
-            0 8px 32px -12px rgba(0, 0, 0, 0.6);
-    }
-
-    .card::before {
-        content: "";
+    .modal-close {
         position: absolute;
-        top: 0;
-        left: 10%;
-        right: 10%;
-        height: 1px;
-        background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.32),
-            transparent);
-    }
-
-    /* ====== VIP-КАРТА ====== */
-    .card--vip {
-        border-color: var(--gold-border);
-        background:
-            linear-gradient(160deg,
-                rgba(255, 183, 3, 0.08) 0%,
-                rgba(255, 255, 255, 0.025) 50%,
-                rgba(255, 255, 255, 0.005) 100%),
-            linear-gradient(160deg,
-                rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.015) 100%);
-    }
-
-    .card--vip::before {
-        background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 183, 3, 0.6),
-            transparent);
-    }
-
-    .card--vip .card__title { color: var(--gold); }
-    .card--vip .check { color: var(--gold); box-shadow: 0 0 16px rgba(255, 183, 3, 0.6); }
-    .card--vip .card__btn {
-        background: linear-gradient(135deg, #ffb703 0%, #ff9505 100%);
-        color: #1a1206;
-    }
-    .card--vip .card__btn:hover {
-        box-shadow: 0 12px 36px -8px rgba(255, 183, 3, 0.55);
-    }
-
-    /* ====== НАПОЛНЕНИЕ КАРТОЧКИ ====== */
-    .card__head {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 6px;
-    }
-
-    .card__title {
-        font-size: 22px;
-        font-weight: 800;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-    }
-
-    .card__badge {
-        flex-shrink: 0;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: #1a1206;
-        background: linear-gradient(135deg, #ffd768, #ffb703);
-        padding: 6px 12px;
-        border-radius: 100px;
-        margin-top: 2px;
-    }
-
-    .card__price {
-        display: flex;
-        align-items: baseline;
-        gap: 8px;
-        margin: 16px 0 28px;
-    }
-
-    .card__price-value {
-        font-size: 44px;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        color: #eef0f4;
-        background: linear-gradient(180deg, #ffffff, #a0a5b0);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .card--vip .card__price-value {
-        color: var(--gold);
-        background: linear-gradient(180deg, #ffe08a, #ffb703);
-        -webkit-background-clip: text;
-        background-clip: text;
-    }
-
-    .card__price-currency {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--text-dim-strong);
-    }
-
-    .card__divider {
-        height: 1px;
-        background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.12),
-            transparent);
-        margin-bottom: 28px;
-    }
-
-    /* ====== СПИСОК ФУНКЦИЙ ====== */
-    .card__features {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-        flex-grow: 1;
-        margin-bottom: 34px;
-    }
-
-    .card__features li {
-        display: flex;
-        align-items: flex-start;
-        gap: 14px;
-        font-size: 15px;
-        line-height: 1.55;
-        color: var(--text-dim);
-        animation: featureIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-    }
-
-    /* Задержки анимации для пунктов списка */
-    .card:nth-child(1) .card__features li:nth-child(1) { animation-delay: 0.30s; }
-    .card:nth-child(1) .card__features li:nth-child(2) { animation-delay: 0.38s; }
-    .card:nth-child(1) .card__features li:nth-child(3) { animation-delay: 0.46s; }
-    .card:nth-child(1) .card__features li:nth-child(4) { animation-delay: 0.54s; }
-    .card:nth-child(2) .card__features li:nth-child(1) { animation-delay: 0.40s; }
-    .card:nth-child(2) .card__features li:nth-child(2) { animation-delay: 0.48s; }
-    .card:nth-child(2) .card__features li:nth-child(3) { animation-delay: 0.56s; }
-    .card:nth-child(3) .card__features li:nth-child(1) { animation-delay: 0.50s; }
-    .card:nth-child(3) .card__features li:nth-child(2) { animation-delay: 0.58s; }
-    .card:nth-child(3) .card__features li:nth-child(3) { animation-delay: 0.66s; }
-    .card:nth-child(4) .card__features li:nth-child(1) { animation-delay: 0.60s; }
-    .card:nth-child(4) .card__features li:nth-child(2) { animation-delay: 0.68s; }
-    .card:nth-child(4) .card__features li:nth-child(3) { animation-delay: 0.76s; }
-
-    @keyframes featureIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .check {
-        flex-shrink: 0;
-        width: 24px;
-        height: 24px;
-        margin-top: 2px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: rgba(46, 204, 113, 0.14);
-        border: 1px solid rgba(46, 204, 113, 0.4);
-        color: var(--check-green);
-        font-size: 12px;
-        font-weight: 700;
-        box-shadow: 0 0 16px rgba(46, 204, 113, 0.55);
-        line-height: 1;
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .card:hover .check {
-        transform: scale(1.08);
-        box-shadow: 0 0 22px rgba(46, 204, 113, 0.7);
-    }
-
-    .card--vip:hover .check {
-        box-shadow: 0 0 24px rgba(255, 183, 3, 0.7);
-    }
-
-    /* ====== КНОПКА ====== */
-    .card__btn {
-        display: block;
-        width: 100%;
-        padding: 16px 20px;
+        top: 20px;
+        right: 20px;
+        background: none;
         border: none;
-        border-radius: 16px;
-        font-family: inherit;
-        font-size: 14px;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        text-align: center;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 28px;
         cursor: pointer;
-        color: #ffffff;
-        background: linear-gradient(135deg, #6a2bf2 0%, #4d12e6 100%);
-        box-shadow: 0 10px 28px -10px rgba(77, 18, 230, 0.6);
-        transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+        line-height: 1;
+        padding: 0;
+        transition: color 0.2s;
     }
 
-    .card__btn:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
-        box-shadow: 0 14px 36px -10px rgba(77, 18, 230, 0.75);
+    .modal-close:hover {
+        color: #fff;
     }
 
-    .card__btn:active {
-        transform: translateY(0);
+    .modal-title {
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 24px;
+        color: #fff;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
-    .card__btn:focus-visible {
-        outline: 2px solid rgba(255, 255, 255, 0.3);
-        outline-offset: 2px;
+    .modal-subtitle {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 32px;
+        text-align: center;
     }
 
-    /* ====== АДАПТИВ ====== */
-    @media (max-width: 767px) {
-        .page { padding: 64px 16px 80px; }
-        .pricing { grid-template-columns: 1fr; gap: 24px; }
-        .card { padding: 34px 28px 32px; }
-        .card__price-value { font-size: 38px; }
-        .card__title { font-size: 20px; }
+    .modal-content {
+        color: rgba(255, 255, 255, 0.75);
+        line-height: 1.7;
+        font-size: 16px;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-        .card, .card__features li { animation: none; }
+    .modal-content strong {
+        color: #fff;
+    }
+
+    .skill-block {
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .skill-block:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .skill-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .skill-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .skill-list li {
+        position: relative;
+        padding-left: 28px;
+        margin-bottom: 8px;
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .skill-list li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: #00ff9d;
+        font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+        .modal-window {
+            padding: 24px;
+            margin: 10px;
+            max-width: 95%;
+        }
+        .modal-title {
+            font-size: 26px;
+        }
     }
 </style>
-</head>
-<body>
 
-    <!-- ВОДНЫЙ СЛОЙ (ИСКАЖАЕТСЯ) -->
-    <div class="ripple-layer" id="ripple"></div>
-
-    <!-- ФОН (ЧЕТКИЙ) -->
-    <div class="bg-grid" aria-hidden="true"></div>
-    <div class="glow glow--purple" aria-hidden="true"></div>
-    <div class="glow glow--teal" aria-hidden="true"></div>
-
-    <main class="page">
-        <span class="page__eyebrow">Обучение монтажу и 3D-графике</span>
-        <h1 class="page__title">ТАРИФЫ</h1>
-        <p class="page__subtitle">Выберите подходящий формат обучения — от базовых навыков до полного погружения в профессию.</p>
-
-        <div class="pricing">
-
-            <article class="card">
-                <div class="card__head">
-                    <h2 class="card__title">База АЕ</h2>
-                </div>
-                <div class="card__price">
-                    <span class="card__price-value">5 000</span>
-                    <span class="card__price-currency">₽</span>
-                </div>
-                <div class="card__divider"></div>
-                <ul class="card__features">
-                    <li><span class="check">✓</span><span>Обучение всем азам в AE</span></li>
-                    <li><span class="check">✓</span><span>Проекты, которые не попали в мой пак</span></li>
-                    <li><span class="check">✓</span><span>Сможете освоить базовые знания применения SFX\VFX</span></li>
-                    <li><span class="check">✓</span><span>Готовые уроки, по которым вы будете обучаться</span></li>
+<!-- РАЗМЕТКА МОДАЛЬНЫХ ОКОН -->
+<!-- МОДАЛЬНОЕ ОКНО: БАЗА АЕ -->
+<div id="modal-ae" class="modal-overlay">
+    <div class="modal-window">
+        <button class="modal-close">&times;</button>
+        <h2 class="modal-title">База АЕ</h2>
+        <p class="modal-subtitle">Курс для новичков в After Effects</p>
+        <div class="modal-content">
+            <p>Данный курс создан для совсем новичков в программе под названием After Effects. Здесь вы познакомитесь с азами этой программы и сразу после 1 видео‑урока сможете выполнить ДЗ, которое я лично проверю.</p>
+            <div class="skill-block">
+                <div class="skill-title">Базовая композиция и первые сцены</div>
+                <ul class="skill-list">
+                    <li>Создавать приятные глазу композиции и сцены</li>
                 </ul>
-                <button class="card__btn" type="button">Подробнее</button>
-            </article>
-
-            <article class="card">
-                <div class="card__head">
-                    <h2 class="card__title">Моушен</h2>
-                </div>
-                <div class="card__price">
-                    <span class="card__price-value">10 000</span>
-                    <span class="card__price-currency">₽</span>
-                </div>
-                <div class="card__divider"></div>
-                <ul class="card__features">
-                    <li><span class="check">✓</span><span>2 месяца обучения</span></li>
-                    <li><span class="check">✓</span><span>Разборы моих личных проектов</span></li>
-                    <li><span class="check">✓</span><span>Различные способы по поиску первых клиентов</span></li>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Камеры</div>
+                <ul class="skill-list">
+                    <li>Освоите 3D‑пространство в AE и работу с камерами</li>
                 </ul>
-                <button class="card__btn" type="button">Подробнее</button>
-            </article>
-
-            <article class="card">
-                <div class="card__head">
-                    <h2 class="card__title">3Д Графика</h2>
-                </div>
-                <div class="card__price">
-                    <span class="card__price-value">15 000</span>
-                    <span class="card__price-currency">₽</span>
-                </div>
-                <div class="card__divider"></div>
-                <ul class="card__features">
-                    <li><span class="check">✓</span><span>Обучение базе в Blender</span></li>
-                    <li><span class="check">✓</span><span>Готовые уроки по моделированию</span></li>
-                    <li><span class="check">✓</span><span>Применение в AE</span></li>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Анимации</div>
+                <ul class="skill-list">
+                    <li>Научитесь базовой анимации объектов и расстановке ключей</li>
                 </ul>
-                <button class="card__btn" type="button">Подробнее</button>
-            </article>
-
-            <article class="card card--vip">
-                <div class="card__head">
-                    <h2 class="card__title">Все включено</h2>
-                    <span class="card__badge">VIP</span>
-                </div>
-                <div class="card__price">
-                    <span class="card__price-value">24 000</span>
-                    <span class="card__price-currency">₽</span>
-                </div>
-                <div class="card__divider"></div>
-                <ul class="card__features">
-                    <li><span class="check">✓</span><span>Получите все перечисленное выше</span></li>
-                    <li><span class="check">✓</span><span>Постоянная связь со мной</span></li>
-                    <li><span class="check">✓</span><span>Также помогу выйти на 1 клиента</span></li>
-                </ul>
-                <button class="card__btn" type="button">Подробнее</button>
-            </article>
-
+            </div>
         </div>
-    </main>
+    </div>
+</div>
 
-    <!-- ИНИЦИАЛИЗАЦИЯ ЭФФЕКТА -->
-    <script>
-        \$(document).ready(function() {
-            // Инициализируем рябь на элементе с id="ripple"
-            \$('#ripple').ripples({
-                resolution: 512,       // Чем выше, тем детальнее, но тяжелее для GPU
-                dropRadius: 20,        // Радиус капли (размер волны)
-                perturbance: 0.04,     // Сила искажения (0.01 - легкая рябь, 0.1 - сильное искажение)
-                interactive: true      // Реагировать на курсор
+<!-- МОДАЛЬНОЕ ОКНО: МОУШЕН -->
+<div id="modal-mo" class="modal-overlay">
+    <div class="modal-window">
+        <button class="modal-close">&times;</button>
+        <h2 class="modal-title">Моушен</h2>
+        <p class="modal-subtitle">Продвинутая база в After Effects, 2 месяца обучения</p>
+        <div class="modal-content">
+            <p>Данный курс будет проходить в формате онлайн, где я вас буду обучать продвинутой базе в After Effects. Курс будет идти 2 месяца.</p>
+            <div class="skill-block">
+                <div class="skill-title">Текст</div>
+                <ul class="skill-list">
+                    <li>Работать с текстом на высоком уровне</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">3D</div>
+                <ul class="skill-list">
+                    <li>Получите высокий уровень работы с 3D‑пространством и камерой</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Анимации</div>
+                <ul class="skill-list">
+                    <li>Обновлённая версия анимации объектов</li>
+                    <li>Добавление анимации персонажей</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО: 3D ГРАФИКА (CGI) -->
+<div id="modal-3d" class="modal-overlay">
+    <div class="modal-window">
+        <button class="modal-close">&times;</button>
+        <h2 class="modal-title">3D Графика (CGI)</h2>
+        <p class="modal-subtitle">Полное обучение азам 3D в Blender и применение в AE</p>
+        <div class="modal-content">
+            <p>Полное обучение азам 3D в Blender и способы применения 3D‑моделей в After Effects.</p>
+            <div class="skill-block">
+                <div class="skill-title">Основа</div>
+                <ul class="skill-list">
+                    <li>Изучите интерфейс Blender</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Моделирование</div>
+                <ul class="skill-list">
+                    <li>Сможете сделать свою первую 3D‑модель и закинуть её в AE</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Анимации и риггинг</div>
+                <ul class="skill-list">
+                    <li>Научитесь работать с окружением и персонажем</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ЛОГИКА МОДАЛЬНЫХ ОКОН -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('button[data-modal], .btn-detail[data-modal]');
+        const overlays = document.querySelectorAll('.modal-overlay');
+        
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeModal(modal) {
+            modal.classList.remove('active');
+        }
+        
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetModal = this.getAttribute('data-modal');
+                if (targetModal) {
+                    openModal(targetModal);
+                }
             });
         });
-    </script>
-</body>
-</html>
-```
+        
+        overlays.forEach(overlay => {
+            const closeBtn = overlay.querySelector('.modal-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    closeModal(overlay);
+                    document.body.style.overflow = '';
+                });
+            }
+            
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    closeModal(overlay);
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Закрытие по клавише Esc
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const activeModal = document.querySelector('.modal-overlay.active');
+                if (activeModal) {
+                    closeModal(activeModal);
+                    document.body.style.overflow = '';
+                }
+            }
+        });
+    });
+</script>
