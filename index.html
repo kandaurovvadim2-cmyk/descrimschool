@@ -3,170 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тарифы — descrim school</title>
-    <!-- Подключаем Tailwind CSS для стилей -->
-    <script src="https://jsdelivr.net"></script>
+    <title>Тарифы обучения</title>
     <style>
-        /* Кастомные настройки для точной передачи атмосферы оригинала */
+        /* Базовые настройки и темная тема */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
         body {
-            background-color: #0d0814; /* Глубокий темно-фиолетовый */
+            background-color: #0d0e12;
             color: #ffffff;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 60px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
-        .purple-glow {
-            box-shadow: 0 0 50px -10px rgba(139, 92, 246, 0.15);
+
+        h1.page-title {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 1100px;
+            text-align: left;
+            font-weight: 800;
         }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px -5px rgba(139, 92, 246, 0.2);
+
+        /* Сетка для тарифов: 3 колонки */
+        .tariff-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Стилизация карточки */
+        .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Хедер карточки с бейджиками */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .badge {
+            background: #e63946;
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-description {
+            color: #8a8d98;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 28px;
+            min-height: 40px;
+        }
+
+        /* Список преимуществ с кастомными зелеными галочками */
+        .features-list {
+            list-style: none;
+            margin-bottom: 32px;
+            flex-grow: 1;
+        }
+
+        .features-list li {
+            font-size: 0.9rem;
+            color: #e1e3e6;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background-color: #2ec4b6;
+            color: #0d0e12;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Выгода (желтая плашка) */
+        .benefit-tag {
+            background: rgba(255, 183, 3, 0.1);
+            border: 1px solid rgba(255, 183, 3, 0.3);
+            color: #ffb703;
+            text-align: center;
+            padding: 8px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* Блок цены и кнопки */
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .price-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .old-price {
+            color: #6c757d;
+            text-decoration: line-through;
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+        }
+
+        .current-price {
+            font-size: 1.35rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* Кнопка с неоновым фиолетовым градиентом */
+        .btn-more {
+            background: linear-gradient(90deg, #4d12e6 0%, #7212e6 100%);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(114, 18, 230, 0.3);
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .btn-more:hover {
+            box-shadow: 0 6px 20px rgba(114, 18, 230, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Адаптивность для планшетов и мобилок */
+        @media (max-width: 992px) {
+            .tariff-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 680px) {
+            .tariff-grid {
+                grid-template-columns: 1fr;
+            }
+            h1.page-title {
+                text-align: center;
+            }
         }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col justify-between">
+<body>
 
-    <!-- Хедер / Шапка -->
-    <header class="border-b border-purple-900/30 bg-[#0d0814]/80 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-2">
-                <!-- Неоновый фиолетово-зеленый логотип -->
-                <span class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-green-400 uppercase">
-                    descrim school
-                </span>
+    <h1 class="page-title">Тарифы</h1>
+
+    <main class="tariff-grid">
+
+        <!-- Карточка 1: Моушен PRO -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Моушен PRO</div>
             </div>
-            <div class="flex items-center gap-3">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20 animate-pulse">
-                    ● Набор открыт
-                </span>
-                <span class="text-sm text-gray-400">Старт: <strong class="text-white">Ближайший поток</strong></span>
+            <div class="card-description">Полный курс по моушн-дизайну с практикой на реальных проектах</div>
+            <ul class="features-list">
+                <li>3 месяца плотного обучения</li>
+                <li>Практика на реальных проектах</li>
+                <li>Грант 20 000₽ лучшему ученику</li>
+                <li>70+ авторских паков и проджект-файлов</li>
+            </ul>
+            <div class="card-footer">
+                <div class="price-container">
+                    <span class="current-price">22 650 ₽</span>
+                </div>
+                <a href="#" class="btn-more">Подробнее</a>
             </div>
         </div>
-    </header>
 
-    <!-- Главный контент -->
-    <main class="max-w-6xl mx-auto px-4 py-12 md:py-20 w-full flex-grow">
-        <!-- Заголовок страницы -->
-        <div class="text-center mb-16 space-y-4">
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight">
-                Выбирай свой <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-white to-green-400">тариф обучения</span>
-            </h1>
-            <p class="text-gray-400 max-w-xl mx-auto text-base md:text-lg">
-                Сделай шаг навстречу профессиональному монтажу, моушен-дизайну и 3D-графике уже сегодня.
-            </p>
+        <!-- Карточка 2: База AE (Популярное) -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">База AE</div>
+                <span class="badge">🔥 Популярное</span>
+            </div>
+            <div class="card-description">After Effects без боли и хаоса — только по делу</div>
+            <ul class="features-list">
+                <li>20 онлайн-уроков</li>
+                <li>Базовые принципы работы в AE</li>
+                <li>Готовые шаблоны</li>
+                <li>Освоите основы Моушн-графики, VFX и композа</li>
+            </ul>
+            <div class="card-footer">
+                <div class="price-container">
+                    <span class="old-price">22 650 ₽</span>
+                    <span class="current-price" style="color: #ffb703;">19 130 ₽</span>
+                </div>
+                <a href="#" class="btn-more">Подробнее</a>
+            </div>
         </div>
 
-        <!-- Сетка тарифов -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-            
-            <!-- Тариф: БАЗА AE -->
-            <div class="flex flex-col justify-between bg-[#140e1f] border border-purple-900/30 rounded-2xl p-6 transition-all duration-300 card-hover purple-glow">
-                <div>
-                    <h3 class="text-xl font-bold uppercase tracking-wide text-gray-200 mb-2">БАЗА AE</h3>
-                    <div class="flex items-baseline gap-1 my-4">
-                        <span class="text-3xl font-black text-white">5 000</span>
-                        <span class="text-purple-400 font-medium">₽</span>
-                    </div>
-                    <div class="w-full h-px bg-purple-900/20 my-4"></div>
-                    <ul class="space-y-3 text-sm text-gray-300">
-                        <li class="flex items-start gap-2">
-                            <span class="text-purple-400 mt-0.5">✓</span> Обучение всем азам в AE
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-purple-400 mt-0.5">✓</span> Проекты, которые не попали в мой пак
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-purple-400 mt-0.5">✓</span> Освоите базовые знания применения SFX/VFX
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-purple-400 mt-0.5">✓</span> Готовые уроки для комфортного обучения
-                        </li>
-                    </ul>
-                </div>
-                <div class="mt-8">
-                    <a href="#order" class="block w-full py-3 px-4 text-center text-sm font-semibold rounded-xl bg-purple-600 hover:bg-purple-700 text-white transition-colors duration-200 shadow-lg shadow-purple-600/10">
-                        Выбрать тариф
-                    </a>
-                </div>
+        <!-- Карточка 3: CGI мастер -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">CGI мастер</div>
             </div>
-
-            <!-- Тариф: МОУШЕН -->
-            <div class="flex flex-col justify-between bg-[#140e1f] border border-purple-900/30 rounded-2xl p-6 transition-all duration-300 card-hover purple-glow">
-                <div>
-                    <h3 class="text-xl font-bold uppercase tracking-wide text-gray-200 mb-2">МОУШЕН</h3>
-                    <div class="flex items-baseline gap-1 my-4">
-                        <span class="text-3xl font-black text-white">10 000</span>
-                        <span class="text-purple-400 font-medium">₽</span>
-                    </div>
-                    <div class="w-full h-px bg-purple-900/20 my-4"></div>
-                    <ul class="space-y-3 text-sm text-gray-300">
-                        <li class="flex items-start gap-2">
-                            <span class="text-purple-400 mt-0.5">✓</span> 2 месяца плотного обучения
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-purple-400 mt-0.5">✓</span> Подробные разборы моих личных проектов
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-purple-400 mt-0.5">✓</span> Различные способы поиска первых клиентов
-                        </li>
-                    </ul>
+            <div class="card-description">Профессиональный курс по созданию 3D-сцен и их интеграции в видеомонтаж</div>
+            <ul class="features-list">
+                <li>3 месяца плотного обучения</li>
+                <li>Практика на реальных проектах</li>
+                <li>Грант 20 000₽ лучшему ученику</li>
+                <li>60+ авторских паков для 3D</li>
+            </ul>
+            <div class="card-footer">
+                <div class="price-container">
+                    <span class="current-price">28 370 ₽</span>
                 </div>
-                <div class="mt-8">
-                    <a href="#order" class="block w-full py-3 px-4 text-center text-sm font-semibold rounded-xl bg-purple-600 hover:bg-purple-700 text-white transition-colors duration-200 shadow-lg shadow-purple-600/10">
-                        Выбрать тариф
-                    </a>
-                </div>
+                <a href="#" class="btn-more">Подробнее</a>
             </div>
+        </div>
 
-            <!-- Тариф: 3Д ГРАФИКА -->
-            <div class="flex flex-col justify-between bg-[#140e1f] border border-purple-900/30 rounded-2xl p-6 transition-all duration-300 card-hover purple-glow">
-                <div>
-                    <h3 class="text-xl font-bold uppercase tracking-wide text-gray-200 mb-2">3Д ГРАФИКА</h3>
-                    <div class="flex items-baseline gap-1 my-4">
-                        <span class="text-3xl font-black text-white">15 000</span>
-                        <span class="text-purple-400 font-medium">₽</span>
-                    </div>
-                    <div class="w-full h-px bg-purple-900/20 my-4"></div>
-                    <ul class="space-y-3 text-sm text-gray-300">
-                        <li class="flex items-start gap-2">
-                            <span class="text-purple-400 mt-0.5">✓</span> Обучение уверенной базе в Blender
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-purple-400 mt-0.5">✓</span> Готовые уроки по 3D-моделированию
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-purple-400 mt-0.5">✓</span> Интеграция и применение графики в AE
-                        </li>
-                    </ul>
-                </div>
-                <div class="mt-8">
-                    <a href="#order" class="block w-full py-3 px-4 text-center text-sm font-semibold rounded-xl bg-purple-600 hover:bg-purple-700 text-white transition-colors duration-200 shadow-lg shadow-purple-600/10">
-                        Выбрать тариф
-                    </a>
-                </div>
+        <!-- Карточка 4: Моушен PRO + CGI мастер -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Моушен PRO + CGI</div>
             </div>
+            <div class="card-description">Освойте 3D и CGI в сочетании с профессиональным моушн-дизайном</div>
+            <ul class="features-list">
+                <li>4 месяца обучения с выгодой</li>
+                <li>Практика на реальных проектах</li>
+                <li>Грант 20 000₽ лучшему ученику</li>
+                <li>Доступ к нашей приватке</li>
+            </ul>
+            <div class="benefit-tag">Выгода по пакету 6 790 ₽</div>
+            <div class="card-footer">
+                <a href="#" class="btn-more" style="width: 100%;">Подробнее</a>
+            </div>
+        </div>
 
-            <!-- Тариф: ВСЕ ВКЛЮЧЕНО (Премиальный / Акцентный) -->
-            <div class="flex flex-col justify-between bg-[#170f26] border-2 border-green-500 rounded-2xl p-6 transition-all duration-300 card-hover relative shadow-2xl shadow-green-500/5">
-                <!-- Ярлык «Популярное / Выгода» в стиле оригинала -->
-                <span class="absolute -top-3 right-6 bg-green-500 text-black text-[10px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider">
-                    МАКСИМУМ
-                </span>
-                <div>
-                    <h3 class="text-xl font-bold uppercase tracking-wide text-green-400 mb-2">ВСЕ ВКЛЮЧЕНО</h3>
-                    <div class="flex items-baseline gap-1 my-4">
-                        <span class="text-3xl font-black text-white">24 000</span>
-                        <span class="text-green-400 font-medium">₽</span>
-                    </div>
-                    <div class="w-full h-px bg-green-500/20 my-4"></div>
-                    <ul class="space-y-3 text-sm text-gray-200">
-                        <li class="flex items-start gap-2">
-                            <span class="text-green-400 mt-0.5">✓</span> <strong class="text-white">Получите все</strong> перечисленное выше
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-green-400 mt-0.5">✓</span> Постоянная личная связь со мной
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-green-400 mt-0.5">✓</span> <strong class="text-green-300">Помогу выйти на 1-го клиента</strong>
-                        </li>
-                    </ul>
-                </div>
-                <div class="mt-8">
+        <!-- Карточка 5: Моушен PRO + База AE -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Моушен PRO + База</div>
+            </div>
+            <div class="card-description">Пакет из двух курсов для профессионального освоения After Effects и моушн-дизайна</div>
+            <ul class="features-list">
+                <li>4 месяца обучения с выгодой</li>
+                <li>Практика на реальных проектах</li>
+                <li>Грант 20 000₽ лучшему ученику</li>
+                <li>Доступ к нашей приватке</li>
+            </ul>
+            <div class="benefit-tag">Выгода по пакету 8 520 ₽</div>
+            <div class="card-footer">
