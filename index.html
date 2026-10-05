@@ -5,24 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Тарифы — Школа видеомонтажа и 3D-графики</title>
 
-<!-- Шрифт -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"></noscript>
 
-<!-- Подключаем jQuery (нужен для плагина ряби) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Подключаем плагин ряби -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
-
 <style>
-    /* ====== RESET & BASE ====== */
-    *, *::before, *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
         --bg: #08090d;
@@ -35,9 +24,6 @@
         --text-main: #f5f6fa;
         --text-dim: rgba(235, 237, 245, 0.62);
         --text-dim-strong: rgba(235, 237, 245, 0.82);
-        --modal-bg: rgba(8, 9, 13, 0.94);
-        --modal-card: rgba(255, 255, 255, 0.04);
-        --modal-border: rgba(255, 255, 255, 0.08);
     }
 
     body {
@@ -50,7 +36,6 @@
         text-rendering: optimizeLegibility;
     }
 
-    /* ====== ВОДНЫЙ ЭФФЕКТ (RIPPLE) ====== */
     .ripple-layer {
         position: fixed;
         inset: 0;
@@ -59,7 +44,6 @@
         pointer-events: none;
     }
 
-    /* ====== ФОН: СЕТКА И СВЕЧЕНИЕ (ПОВЕРХ ВОДЫ) ====== */
     .bg-grid {
         position: fixed;
         inset: 0;
@@ -82,23 +66,9 @@
         pointer-events: none;
     }
 
-    .glow--purple {
-        width: 560px;
-        height: 560px;
-        background: var(--accent-purple);
-        top: -180px;
-        left: -160px;
-    }
+    .glow--purple { width: 560px; height: 560px; background: var(--accent-purple); top: -180px; left: -160px; }
+    .glow--teal { width: 520px; height: 520px; background: var(--accent-teal); bottom: -180px; right: -140px; }
 
-    .glow--teal {
-        width: 520px;
-        height: 520px;
-        background: var(--accent-teal);
-        bottom: -180px;
-        right: -140px;
-    }
-
-    /* ====== РАЗМЕТКА СТРАНИЦЫ ====== */
     .page {
         position: relative;
         z-index: 10;
@@ -109,7 +79,6 @@
         padding: 90px 24px 110px;
     }
 
-    /* ====== ЗАГОЛОВОК ====== */
     .page__eyebrow {
         display: inline-block;
         font-size: 12px;
@@ -147,7 +116,6 @@
         line-height: 1.6;
     }
 
-    /* ====== СЕТКА: 2x2 НА ДЕСКТОПЕ, 1 КОЛОНКА НА МОБИЛЬНЫХ ====== */
     .pricing {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 460px));
@@ -157,7 +125,6 @@
         max-width: 980px;
     }
 
-    /* ====== КАРТОЧКА ====== */
     .card {
         position: relative;
         display: flex;
@@ -165,18 +132,13 @@
         padding: 44px 38px 40px;
         border-radius: 26px;
         background:
-            linear-gradient(160deg,
-                rgba(255, 255, 255, 0.06) 0%,
-                rgba(255, 255, 255, 0.015) 45%,
-                rgba(255, 255, 255, 0.005) 100%);
+            linear-gradient(160deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.015) 45%, rgba(255,255,255,0.005) 100%);
         border: 1px solid var(--card-border);
         -webkit-backdrop-filter: blur(22px);
         backdrop-filter: blur(22px);
         overflow: hidden;
         animation: cardIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-                    border-color 0.35s ease,
-                    box-shadow 0.35s ease;
+        transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), border-color 0.35s ease, box-shadow 0.35s ease;
     }
 
     .card:nth-child(1) { animation-delay: 0.10s; }
@@ -192,150 +154,77 @@
     .card:hover {
         transform: translateY(-12px);
         border-color: rgba(255, 255, 255, 0.14);
-        box-shadow:
-            0 26px 64px -20px rgba(77, 18, 230, 0.38),
-            0 8px 32px -12px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 26px 64px -20px rgba(77,18,230,0.38), 0 8px 32px -12px rgba(0,0,0,0.6);
     }
 
     .card--vip:hover {
-        box-shadow:
-            0 26px 64px -18px rgba(255, 183, 3, 0.32),
-            0 8px 32px -12px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 26px 64px -18px rgba(255,183,3,0.32), 0 8px 32px -12px rgba(0,0,0,0.6);
     }
 
     .card::before {
         content: "";
         position: absolute;
-        top: 0;
-        left: 10%;
-        right: 10%;
+        top: 0; left: 10%; right: 10%;
         height: 1px;
-        background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.32),
-            transparent);
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
     }
 
-    /* ====== VIP-КАРТА ====== */
     .card--vip {
         border-color: var(--gold-border);
         background:
-            linear-gradient(160deg,
-                rgba(255, 183, 3, 0.08) 0%,
-                rgba(255, 255, 255, 0.025) 50%,
-                rgba(255, 255, 255, 0.005) 100%),
-            linear-gradient(160deg,
-                rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.015) 100%);
+            linear-gradient(160deg, rgba(255,183,3,0.08) 0%, rgba(255,255,255,0.025) 50%, rgba(255,255,255,0.005) 100%),
+            linear-gradient(160deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%);
     }
 
-    .card--vip::before {
-        background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 183, 3, 0.6),
-            transparent);
-    }
-
+    .card--vip::before { background: linear-gradient(90deg, transparent, rgba(255,183,3,0.6), transparent); }
     .card--vip .card__title { color: var(--gold); }
-    .card--vip .check { color: var(--gold); box-shadow: 0 0 16px rgba(255, 183, 3, 0.6); }
-    .card--vip .card__btn {
-        background: linear-gradient(135deg, #ffb703 0%, #ff9505 100%);
-        color: #1a1206;
-    }
-    .card--vip .card__btn:hover {
-        box-shadow: 0 12px 36px -8px rgba(255, 183, 3, 0.55);
-    }
+    .card--vip .check { color: var(--gold); box-shadow: 0 0 16px rgba(255,183,3,0.6); }
+    .card--vip .card__btn { background: linear-gradient(135deg, #ffb703 0%, #ff9505 100%); color: #1a1206; }
+    .card--vip .card__btn:hover { box-shadow: 0 12px 36px -8px rgba(255,183,3,0.55); }
 
-    /* ====== НАПОЛНЕНИЕ КАРТОЧКИ ====== */
-    .card__head {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 6px;
-    }
+    .card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
 
-    .card__title {
-        font-size: 22px;
-        font-weight: 800;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-    }
+    .card__title { font-size: 22px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
 
     .card__badge {
         flex-shrink: 0;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
+        font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
         color: #1a1206;
         background: linear-gradient(135deg, #ffd768, #ffb703);
-        padding: 6px 12px;
-        border-radius: 100px;
-        margin-top: 2px;
+        padding: 6px 12px; border-radius: 100px; margin-top: 2px;
     }
 
-    .card__price {
-        display: flex;
-        align-items: baseline;
-        gap: 8px;
-        margin: 16px 0 28px;
-    }
+    .card__price { display: flex; align-items: baseline; gap: 8px; margin: 16px 0 28px; }
 
     .card__price-value {
-        font-size: 44px;
-        font-weight: 800;
-        letter-spacing: -0.03em;
+        font-size: 44px; font-weight: 800; letter-spacing: -0.03em;
         color: #eef0f4;
         background: linear-gradient(180deg, #ffffff, #a0a5b0);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     }
 
     .card--vip .card__price-value {
         color: var(--gold);
         background: linear-gradient(180deg, #ffe08a, #ffb703);
-        -webkit-background-clip: text;
-        background-clip: text;
+        -webkit-background-clip: text; background-clip: text;
     }
 
-    .card__price-currency {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--text-dim-strong);
-    }
+    .card__price-currency { font-size: 22px; font-weight: 700; color: var(--text-dim-strong); }
 
     .card__divider {
         height: 1px;
-        background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.12),
-            transparent);
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
         margin-bottom: 28px;
     }
 
-    /* ====== СПИСОК ФУНКЦИЙ ====== */
-    .card__features {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-        flex-grow: 1;
-        margin-bottom: 34px;
-    }
+    .card__features { list-style: none; display: flex; flex-direction: column; gap: 18px; flex-grow: 1; margin-bottom: 34px; }
 
     .card__features li {
-        display: flex;
-        align-items: flex-start;
-        gap: 14px;
-        font-size: 15px;
-        line-height: 1.55;
-        color: var(--text-dim);
-        animation: featureIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        display: flex; align-items: flex-start; gap: 14px;
+        font-size: 15px; line-height: 1.55; color: var(--text-dim);
+        animation: featureIn 0.6s cubic-bezier(0.22,1,0.36,1) backwards;
     }
 
-    /* Задержки анимации для пунктов списка */
     .card:nth-child(1) .card__features li:nth-child(1) { animation-delay: 0.30s; }
     .card:nth-child(1) .card__features li:nth-child(2) { animation-delay: 0.38s; }
     .card:nth-child(1) .card__features li:nth-child(3) { animation-delay: 0.46s; }
@@ -356,211 +245,114 @@
     }
 
     .check {
-        flex-shrink: 0;
-        width: 24px;
-        height: 24px;
-        margin-top: 2px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        flex-shrink: 0; width: 24px; height: 24px; margin-top: 2px;
+        display: inline-flex; align-items: center; justify-content: center;
         border-radius: 50%;
-        background: rgba(46, 204, 113, 0.14);
-        border: 1px solid rgba(46, 204, 113, 0.4);
-        color: var(--check-green);
-        font-size: 12px;
-        font-weight: 700;
-        box-shadow: 0 0 16px rgba(46, 204, 113, 0.55);
-        line-height: 1;
+        background: rgba(46,204,113,0.14);
+        border: 1px solid rgba(46,204,113,0.4);
+        color: var(--check-green); font-size: 12px; font-weight: 700;
+        box-shadow: 0 0 16px rgba(46,204,113,0.55); line-height: 1;
         transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
 
-    .card:hover .check {
-        transform: scale(1.08);
-        box-shadow: 0 0 22px rgba(46, 204, 113, 0.7);
-    }
+    .card:hover .check { transform: scale(1.08); box-shadow: 0 0 22px rgba(46,204,113,0.7); }
+    .card--vip:hover .check { box-shadow: 0 0 24px rgba(255,183,3,0.7); }
 
-    .card--vip:hover .check {
-        box-shadow: 0 0 24px rgba(255, 183, 3, 0.7);
-    }
-
-    /* ====== КНОПКА ====== */
     .card__btn {
-        display: block;
-        width: 100%;
-        padding: 16px 20px;
-        border: none;
-        border-radius: 16px;
-        font-family: inherit;
-        font-size: 14px;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        text-align: center;
-        cursor: pointer;
+        display: block; width: 100%; padding: 16px 20px;
+        border: none; border-radius: 16px; font-family: inherit;
+        font-size: 14px; font-weight: 700; letter-spacing: 0.14em;
+        text-transform: uppercase; text-align: center; cursor: pointer;
         color: #ffffff;
         background: linear-gradient(135deg, #6a2bf2 0%, #4d12e6 100%);
-        box-shadow: 0 10px 28px -10px rgba(77, 18, 230, 0.6);
+        box-shadow: 0 10px 28px -10px rgba(77,18,230,0.6);
         transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
     }
 
-    .card__btn:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
-        box-shadow: 0 14px 36px -10px rgba(77, 18, 230, 0.75);
-    }
-
-    .card__btn:active {
-        transform: translateY(0);
-    }
-
-    .card__btn:focus-visible {
-        outline: 2px solid rgba(255, 255, 255, 0.3);
-        outline-offset: 2px;
-    }
+    .card__btn:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 14px 36px -10px rgba(77,18,230,0.75); }
+    .card__btn:active { transform: translateY(0); }
+    .card__btn:focus-visible { outline: 2px solid rgba(255,255,255,0.3); outline-offset: 2px; }
 
     /* ====== МОДАЛЬНЫЕ ОКНА ====== */
     .modal-overlay {
         position: fixed;
         inset: 0;
         z-index: 1000;
-        background: var(--modal-bg);
+        background: rgba(8, 9, 13, 0.94);
+        -webkit-backdrop-filter: blur(16px);
         backdrop-filter: blur(16px);
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 20px;
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
-    .modal-overlay.active {
-        opacity: 1;
-        visibility: visible;
-    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
 
     .modal-window {
-        background: var(--modal-card);
-        border: 1px solid var(--modal-border);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 28px;
         padding: 48px;
         width: 100%;
         max-width: 640px;
+        max-height: 85vh;
+        overflow-y: auto;
         position: relative;
-        transform: scale(0.92);
+        transform: scale(0.92) translateY(20px);
         transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
         box-shadow: 0 32px 64px -20px rgba(0, 0, 0, 0.6);
     }
 
-    .modal-overlay.active .modal-window {
-        transform: scale(1);
-    }
+    .modal-overlay.active .modal-window { transform: scale(1) translateY(0); }
 
     .modal-close {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.5);
-        font-size: 32px;
-        cursor: pointer;
-        line-height: 1;
-        padding: 0;
+        position: absolute; top: 20px; right: 20px;
+        background: none; border: none;
+        color: rgba(255,255,255,0.5); font-size: 32px;
+        cursor: pointer; line-height: 1; padding: 0;
         transition: color 0.2s;
     }
 
-    .modal-close:hover {
-        color: #fff;
-    }
+    .modal-close:hover { color: #fff; }
 
     .modal-title {
-        font-size: 36px;
-        font-weight: 800;
-        margin-bottom: 16px;
-        color: #fff;
-        text-align: center;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        font-size: 36px; font-weight: 800; margin-bottom: 16px;
+        text-align: center; text-transform: uppercase; letter-spacing: 1px;
+        color: #eef0f4;
         background: linear-gradient(180deg, #ffffff, #a0a5b0);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    .modal-subtitle {
-        font-size: 16px;
-        color: var(--text-dim);
-        text-align: center;
-        margin-bottom: 36px;
-    }
+    .modal-subtitle { font-size: 16px; color: var(--text-dim); text-align: center; margin-bottom: 36px; }
 
-    .modal-content {
-        color: var(--text-dim);
-        line-height: 1.7;
-        font-size: 16px;
-        margin-bottom: 32px;
-    }
+    .modal-content { color: var(--text-dim); line-height: 1.7; font-size: 16px; margin-bottom: 32px; }
 
-    .modal-content strong {
-        color: #fff;
-    }
+    .skill-block { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .skill-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
-    .skill-block {
-        margin-bottom: 32px;
-        padding-bottom: 32px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
+    .skill-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    .skill-block:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
-
-    .skill-title {
-        font-size: 20px;
-        font-weight: 700;
-        color: #fff;
-        margin-bottom: 16px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .skill-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+    .skill-list { list-style: none; padding: 0; margin: 0; }
 
     .skill-list li {
-        position: relative;
-        padding-left: 28px;
-        margin-bottom: 12px;
-        color: var(--text-dim);
+        position: relative; padding-left: 28px; margin-bottom: 12px; color: var(--text-dim);
     }
 
     .skill-list li::before {
         content: "✓";
-        position: absolute;
-        left: 0;
-        top: 0;
-        color: #00ff9d;
-        font-weight: bold;
+        position: absolute; left: 0; top: 0;
+        color: var(--check-green); font-weight: bold;
     }
 
-    /* Адаптив для модалки */
     @media (max-width: 640px) {
-        .modal-window {
-            padding: 32px;
-            margin: 12px;
-            max-width: 96%;
-        }
-        .modal-title {
-            font-size: 28px;
-        }
+        .modal-window { padding: 32px 24px; }
+        .modal-title { font-size: 28px; }
     }
 
-    /* ====== АДАПТИВ ====== */
     @media (max-width: 767px) {
         .page { padding: 64px 16px 80px; }
         .pricing { grid-template-columns: 1fr; gap: 24px; }
@@ -576,10 +368,7 @@
 </head>
 <body>
 
-    <!-- ВОДНЫЙ СЛОЙ (ИСКАЖАЕТСЯ) -->
     <div class="ripple-layer" id="ripple"></div>
-
-    <!-- ФОН (ЧЕТКИЙ) -->
     <div class="bg-grid" aria-hidden="true"></div>
     <div class="glow glow--purple" aria-hidden="true"></div>
     <div class="glow glow--teal" aria-hidden="true"></div>
@@ -658,7 +447,7 @@
                     <li><span class="check">✓</span><span>Постоянная связь со мной</span></li>
                     <li><span class="check">✓</span><span>Также помогу выйти на 1 клиента</span></li>
                 </ul>
-                <button class="card__btn" type="button">Подробнее</button>
+                <button class="card__btn" type="button" data-modal="modal-vip">Подробнее</button>
             </article>
 
         </div>
@@ -671,7 +460,7 @@
             <h2 class="modal-title">База АЕ</h2>
             <p class="modal-subtitle">Курс для новичков в After Effects</p>
             <div class="modal-content">
-                <p>Данный курс создан для совсем новичков в программе под названием After Effects. Здесь вы познакомитесь с азами этой прекрасной программы и сразу после 1 видео‑урока сможете выполнить ДЗ, которое я лично проверю.</p>
+                <p>Данный курс создан для совсем новичков в программе под названием After Effects. Здесь вы познакомитесь с азами этой прекрасной программы и сразу после 1 видео-урока сможете выполнить ДЗ, которое я лично проверю.</p>
             </div>
             <div class="skill-block">
                 <div class="skill-title">Базовая композиция и первые сцены</div>
@@ -682,7 +471,7 @@
             <div class="skill-block">
                 <div class="skill-title">Камеры</div>
                 <ul class="skill-list">
-                    <li>Освоите 3D‑пространство в AE и работу с камерами</li>
+                    <li>Освоите 3D-пространство в AE и работу с камерами</li>
                 </ul>
             </div>
             <div class="skill-block">
@@ -712,7 +501,7 @@
             <div class="skill-block">
                 <div class="skill-title">3D</div>
                 <ul class="skill-list">
-                    <li>Получите высокий уровень работы с 3D‑пространством и камерой</li>
+                    <li>Получите высокий уровень работы с 3D-пространством и камерой</li>
                 </ul>
             </div>
             <div class="skill-block">
@@ -732,7 +521,7 @@
             <h2 class="modal-title">3D Графика (CGI)</h2>
             <p class="modal-subtitle">Полное обучение азам 3D в Blender и применение в AE</p>
             <div class="modal-content">
-                <p>Полное обучение азам 3D в Blender и способы применения 3D‑моделей в After Effects.</p>
+                <p>Полное обучение азам 3D в Blender и способы применения 3D-моделей в After Effects.</p>
             </div>
             <div class="skill-block">
                 <div class="skill-title">Основа</div>
@@ -743,7 +532,7 @@
             <div class="skill-block">
                 <div class="skill-title">Моделирование</div>
                 <ul class="skill-list">
-                    <li>Сможете сделать свою первую 3D‑модель и закинуть её в AE</li>
+                    <li>Сможете сделать свою первую 3D-модель и закинуть её в AE</li>
                 </ul>
             </div>
             <div class="skill-block">
@@ -755,72 +544,97 @@
         </div>
     </div>
 
-    <!-- ИНИЦИАЛИЗАЦИЯ ЭФФЕКТА -->
-    <script>
-        \$(document).ready(function() {
-            // Инициализируем рябь на элементе с id="ripple"
-            \$('#ripple').ripples({
-                resolution: 512,
-                dropRadius: 20,
-                perturbance: 0.04,
-                interactive: true
-            });
+    <!-- МОДАЛЬНОЕ ОКНО: ВСЕ ВКЛЮЧЕНО (VIP) -->
+    <div id="modal-vip" class="modal-overlay">
+        <div class="modal-window">
+            <button class="modal-close">&times;</button>
+            <h2 class="modal-title">Все включено</h2>
+            <p class="modal-subtitle">Максимальный формат обучения</p>
+            <div class="modal-content">
+                <p>Этот тариф объединяет все курсы: базу AE, моушен-дизайн и 3D-графику — плюс личное сопровождение на всём пути обучения.</p>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Все курсы</div>
+                <ul class="skill-list">
+                    <li>Получите все перечисленное выше</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Личная связь</div>
+                <ul class="skill-list">
+                    <li>Постоянная связь со мной</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Первый клиент</div>
+                <ul class="skill-list">
+                    <li>Также помогу выйти на 1 клиента</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-            // Логика модальных окон
-            const buttons = document.querySelectorAll('button[data-modal]');
-            const overlays = document.querySelectorAll('.modal-overlay');
-            
-            function openModal(modalId) {
-                const modal = document.getElementById(modalId);
+    <!-- ЛОГИКА МОДАЛОК: чистый JS, без jQuery -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var buttons = document.querySelectorAll('[data-modal]');
+
+            function openModal(id) {
+                var modal = document.getElementById(id);
                 if (modal) {
                     modal.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 }
             }
-            
+
             function closeModal(modal) {
                 modal.classList.remove('active');
+                document.body.style.overflow = '';
             }
-            
-            buttons.forEach(btn => {
+
+            buttons.forEach(function(btn) {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const targetModal = this.getAttribute('data-modal');
-                    if (targetModal) {
-                        openModal(targetModal);
-                    }
+                    openModal(this.getAttribute('data-modal'));
                 });
             });
-            
-            overlays.forEach(overlay => {
-                const closeBtn = overlay.querySelector('.modal-close');
+
+            document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+                var closeBtn = overlay.querySelector('.modal-close');
                 if (closeBtn) {
                     closeBtn.addEventListener('click', function(e) {
                         e.stopPropagation();
                         closeModal(overlay);
-                        document.body.style.overflow = '';
                     });
                 }
-                
                 overlay.addEventListener('click', function(e) {
-                    if (e.target === overlay) {
-                        closeModal(overlay);
-                        document.body.style.overflow = '';
-                    }
+                    if (e.target === overlay) closeModal(overlay);
                 });
             });
 
-            // Закрытие по клавише Esc
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    const activeModal = document.querySelector('.modal-overlay.active');
-                    if (activeModal) {
-                        closeModal(activeModal);
-                        document.body.style.overflow = '';
-                    }
+                    var active = document.querySelector('.modal-overlay.active');
+                    if (active) closeModal(active);
                 }
             });
         });
+    </script>
+
+    <!-- РЯБЬ: если jQuery не загрузился, остальное всё равно работает -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
+    <script>
+        if (window.jQuery && window.jQuery.fn.ripples) {
+            $(document).ready(function() {
+                $('#ripple').ripples({
+                    resolution: 512,
+                    dropRadius: 20,
+                    perturbance: 0.04,
+                    interactive: true
+                });
+            });
+        }
     </script>
 </body>
 </html>
