@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тарифы обучения</title>
     <style>
-        /* Базовые настройки */
+        /* Базовые настройки интерфейса */
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +13,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* SaaS Глубокий темный фон с сеткой */
+        /* Глубокий SaaS фон с сеткой и неоновым свечением */
         body {
             background-color: #08090d;
             background-image: 
@@ -27,10 +27,11 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         h1.page-title {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 30px;
@@ -42,12 +43,12 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Скрываем радио-кнопки, они нужны только для логики кликов */
+        /* Скрытые радио-кнопки для управления логикой кликов без JS */
         input[type="radio"] {
             display: none;
         }
 
-        /* ЕДИНАЯ КОМПОЗИЦИЯ: Главный пульт */
+        /* Главная интерактивная SaaS-панель */
         .saas-dashboard {
             display: flex;
             width: 100%;
@@ -58,106 +59,115 @@
             overflow: hidden;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
-        /* Левая панель: Выбор тарифа */
+        /* Левая колонка: Навигация по тарифам */
         .dashboard-tabs {
             flex: 1;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.25);
             border-right: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
-        /* Превращаем label в полноценную кликабельную ссылку-кнопку */
+        /* Кнопка-ссылка (label) */
         .tab-btn {
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: #8a8d98;
-            padding: 16px 20px;
+            padding: 18px 20px;
             border-radius: 14px;
             font-size: 1rem;
             font-weight: 700;
             text-transform: uppercase;
             cursor: pointer;
             border: 1px solid transparent;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
         }
 
         .tab-btn:hover {
             color: #ffffff;
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .tab-arrow {
-            font-size: 0.8rem;
-            opacity: 0.5;
-            transition: transform 0.3s ease;
+            font-size: 0.85rem;
+            opacity: 0.3;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        /* Особый стиль для кнопки тарифа "Все включено" */
         .vip-tab {
-            border: 1px solid rgba(255, 183, 3, 0.1);
+            border: 1px solid rgba(255, 183, 3, 0.08);
         }
 
-        /* ЛОГИКА НА ЧИСТОМ CSS: Подсветка активных вкладок при нажатии */
+        /* Подсветка кнопок меню при активации */
         #tab1:checked ~ .saas-dashboard .dashboard-tabs label[for="tab1"],
         #tab2:checked ~ .saas-dashboard .dashboard-tabs label[for="tab2"],
         #tab3:checked ~ .saas-dashboard .dashboard-tabs label[for="tab3"] {
             color: #ffffff;
             background: rgba(114, 18, 230, 0.15);
             border-color: rgba(114, 18, 230, 0.3);
-        }
-        #tab1:checked ~ .saas-dashboard .dashboard-tabs label[for="tab1"] .tab-arrow,
-        #tab2:checked ~ .saas-dashboard .dashboard-tabs label[for="tab2"] .tab-arrow,
-        #tab3:checked ~ .saas-dashboard .dashboard-tabs label[for="tab3"] .tab-arrow {
-            transform: translateX(4px);
-            opacity: 1;
+            box-shadow: 0 4px 12px rgba(114, 18, 230, 0.1);
         }
 
-        /* Подсветка активного VIP-тарифа */
         #tab4:checked ~ .saas-dashboard .dashboard-tabs label[for="tab4"] {
             color: #ffb703;
-            background: rgba(255, 183, 3, 0.1);
-            border-color: rgba(255, 183, 3, 0.4);
+            background: rgba(255, 183, 3, 0.08);
+            border-color: rgba(255, 183, 3, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 183, 3, 0.05);
         }
+
+        #tab1:checked ~ .saas-dashboard .dashboard-tabs label[for="tab1"] .tab-arrow,
+        #tab2:checked ~ .saas-dashboard .dashboard-tabs label[for="tab2"] .tab-arrow,
+        #tab3:checked ~ .saas-dashboard .dashboard-tabs label[for="tab3"] .tab-arrow,
         #tab4:checked ~ .saas-dashboard .dashboard-tabs label[for="tab4"] .tab-arrow {
-            transform: translateX(4px);
+            transform: translateX(5px);
             opacity: 1;
         }
 
-        /* Правая панель: Окно информации */
+        /* Правая колонка: Контентная зона */
         .dashboard-content {
-            flex: 1.2;
+            flex: 1.3;
             padding: 40px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.002);
+            min-height: 380px; /* Фиксирует высоту, чтобы интерфейс не прыгал */
+        }
+
+        /* Базовое скрытое состояние описания */
+        .tariff-panel {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
             display: flex;
             flex-direction: column;
-            position: relative;
-        }
-
-        /* Скрываем все панели информации по умолчанию */
-        .tariff-panel {
-            display: none;
-            flex-direction: column;
-            height: 100%;
+            
+            /* SaaS-эффект скрытия: прозрачность, сдвиг вниз, размытие и сжатие */
             opacity: 0;
-            transform: translateY(8px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.98);
+            filter: blur(10px);
+            transition: cubic-bezier(0.34, 1.56, 0.64, 1) 0.55s; /* Плавный пружинящий эффект */
+            pointer-events: none;
         }
 
-        /* ЛОГИКА НА ЧИСТОМ CSS: Открытие нужных сведений при клике */
+        /* Красивое появление контента при выборе */
         #tab1:checked ~ .saas-dashboard .dashboard-content #panel-base-ae,
         #tab2:checked ~ .saas-dashboard .dashboard-content #panel-motion,
         #tab3:checked ~ .saas-dashboard .dashboard-content #panel-3d,
         #tab4:checked ~ .saas-dashboard .dashboard-content #panel-all-inclusive {
-            display: flex;
             opacity: 1;
-            transform: translateY(0);
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            filter: blur(0px);
+            pointer-events: auto;
         }
 
         .panel-title {
@@ -166,26 +176,27 @@
             text-transform: uppercase;
             margin-bottom: 24px;
             color: #ffffff;
+            letter-spacing: -0.01em;
         }
 
-        /* Списки фич */
+        /* Списки фич с галочками */
         .features-list {
             list-style: none;
-            margin-bottom: 40px;
-            flex-grow: 1;
+            margin-bottom: auto;
+            padding-bottom: 20px;
         }
 
         .features-list li {
             font-size: 0.95rem;
             color: #b0b3b8;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             display: flex;
             align-items: flex-start;
             gap: 12px;
             line-height: 1.45;
         }
 
-        /* Зеленые галочки */
+        /* Иконки галочек с неоновым свечением */
         .features-list li::before {
             content: "✓";
             display: flex;
@@ -200,17 +211,19 @@
             font-weight: bold;
             flex-shrink: 0;
             margin-top: 2px;
+            box-shadow: 0 0 10px rgba(46, 196, 182, 0.3);
         }
 
-        /* Стилизация VIP-панели */
+        /* Стилизация VIP-панели (Все включено) */
         .vip-panel .features-list li::before {
             background-color: #ffb703;
+            box-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
         }
         .vip-panel .panel-title {
             color: #ffb703;
         }
 
-        /* Цена и кнопки */
+        /* Футер панели (Цена и Кнопка) */
         .panel-footer {
             display: flex;
             align-items: center;
@@ -218,14 +231,17 @@
             gap: 20px;
             padding-top: 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: auto;
         }
 
         .panel-price {
             font-size: 1.8rem;
             font-weight: 800;
             white-space: nowrap;
+            letter-spacing: -0.02em;
         }
 
+        /* SaaS кнопки с градиентом */
         .btn-action {
             background: linear-gradient(90deg, #4d12e6 0%, #7212e6 100%);
             color: #ffffff;
@@ -238,13 +254,13 @@
             letter-spacing: 0.05em;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             box-shadow: 0 4px 15px rgba(114, 18, 230, 0.25);
             text-align: center;
         }
 
         .btn-action:hover {
-            box-shadow: 0 6px 20px rgba(114, 18, 230, 0.55);
+            box-shadow: 0 6px 22px rgba(114, 18, 230, 0.5);
             transform: translateY(-2px);
         }
 
@@ -254,10 +270,10 @@
             box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2);
         }
         .vip-panel .btn-action:hover {
-            box-shadow: 0 6px 20px rgba(255, 183, 3, 0.5);
+            box-shadow: 0 6px 22px rgba(255, 183, 3, 0.45);
         }
 
-        /* Адаптивность для мобилок */
+        /* Адаптивный стек под мобильные */
         @media (max-width: 768px) {
             .saas-dashboard {
                 flex-direction: column;
@@ -265,9 +281,17 @@
             .dashboard-tabs {
                 border-right: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                padding: 16px;
             }
             .dashboard-content {
                 padding: 30px 20px;
+                min-height: 400px;
+            }
+            .tariff-panel {
+                top: 30px;
+                left: 20px;
+                right: 20px;
+                bottom: 30px;
             }
         }
     </style>
@@ -279,30 +303,3 @@
     <!-- Регистраторы кликов (Радио-переключатели) -->
     <input type="radio" id="tab1" name="tariff-select" checked>
     <input type="radio" id="tab2" name="tariff-select">
-    <input type="radio" id="tab3" name="tariff-select">
-    <input type="radio" id="tab4" name="tariff-select">
-
-    <!-- Единая SaaS композиция -->
-    <div class="saas-dashboard">
-        
-        <!-- Левое меню выбора (работает как ссылки через label) -->
-        <div class="dashboard-tabs">
-            <label for="tab1" class="tab-btn">
-                База AE <span class="tab-arrow">→</span>
-            </label>
-            <label for="tab2" class="tab-btn">
-                Моушен <span class="tab-arrow">→</span>
-            </label>
-            <label for="tab3" class="tab-btn">
-                3Д Графика <span class="tab-arrow">→</span>
-            </label>
-            <label for="tab4" class="tab-btn vip-tab">
-                Все включено <span class="tab-arrow">→</span>
-            </label>
-        </div>
-
-        <!-- Правое окно вывода информации -->
-        <div class="dashboard-content">
-
-            <!-- Сведения 1: БАЗА АЕ -->
-            <div id="panel-base-ae" class="tariff-panel">
