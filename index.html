@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Тариф — Школа видеомонтажа и 3D-графики</title>
+<title>Тариф</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,12 +21,10 @@
         --card-border: rgba(255, 255, 255, 0.06);
         --accent-purple: #4d12e6;
         --accent-teal: #2ec4b6;
-        --check-green: #2ecc71;
         --gold: #ffb703;
         --gold-border: rgba(255, 183, 3, 0.18);
         --text-main: #f5f6fa;
         --text-dim: rgba(235, 237, 245, 0.62);
-        --text-dim-strong: rgba(235, 237, 245, 0.82);
     }
 
     body {
@@ -38,7 +36,7 @@
         -webkit-font-smoothing: antialiased;
     }
 
-    /* ====== ВОДА ====== */
+    /* ====== ФОН ====== */
     .ripple-layer {
         position: fixed;
         inset: 0;
@@ -71,19 +69,25 @@
     .glow--purple { width: 560px; height: 560px; background: var(--accent-purple); top: -180px; left: -160px; }
     .glow--teal   { width: 520px; height: 520px; background: var(--accent-teal); bottom: -180px; right: -140px; }
 
-    /* ====== РАЗМЕТКА ====== */
+    /* ====== СТРАНИЦА ====== */
     .page {
         position: relative;
         z-index: 10;
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         padding: 48px 24px 110px;
     }
 
-    .container { width: 100%; max-width: 860px; }
+    .container {
+        width: 100%;
+        max-width: 720px;
+        text-align: center;
+        animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
 
-    /* Хлебные крошки / назад */
     .back-link {
         display: inline-flex;
         align-items: center;
@@ -96,134 +100,47 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 100px;
         background: rgba(255, 255, 255, 0.02);
-        margin-bottom: 40px;
+        margin-bottom: 48px;
         transition: color 0.25s ease, border-color 0.25s ease;
     }
     .back-link:hover { color: var(--text-main); border-color: rgba(255, 255, 255, 0.2); }
     .back-link::before { content: "←"; font-size: 16px; }
 
-    /* Шапка товара */
-    .hero {
-        text-align: center;
-        margin-bottom: 56px;
-        animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-    }
-
-    .hero__badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-
-    .badge {
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        padding: 8px 16px;
-        border-radius: 100px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: var(--text-dim-strong);
-    }
-    .badge--gold {
-        color: #1a1206;
-        background: linear-gradient(135deg, #ffd768, #ffb703);
-        border: none;
-    }
-
-    .hero__title {
-        font-size: clamp(38px, 6vw, 62px);
+    /* ====== ЗАГОЛОВОК ТАРИФА ====== */
+    .tariff-title {
+        font-size: clamp(44px, 7vw, 76px);
         font-weight: 800;
         letter-spacing: -0.02em;
         line-height: 1.1;
+        text-transform: uppercase;
         color: #eef0f4;
         background: linear-gradient(180deg, #ffffff 0%, #a0a5b0 100%);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 20px;
-        text-transform: uppercase;
+        margin-bottom: 28px;
     }
 
-    /* VIP-вариант */
-    .theme-gold .hero__title,
-    .theme-gold .section__title {
-        color: var(--gold);
+    /* Золотая тема для VIP */
+    .theme-gold .tariff-title {
         background: linear-gradient(180deg, #ffe08a 0%, #ffb703 100%);
         -webkit-background-clip: text;
         background-clip: text;
     }
 
-    .hero__desc {
+    /* ====== ОПИСАНИЕ (ЗАГОТОВКА) ====== */
+    .tariff-desc {
         font-size: 17px;
         color: var(--text-dim);
-        max-width: 640px;
-        margin: 0 auto;
         line-height: 1.7;
+        max-width: 600px;
+        margin: 0 auto 48px;
     }
 
-    /* Блок цены */
-    .price-card {
-        position: relative;
-        padding: 40px;
-        border-radius: 26px;
-        background:
-            linear-gradient(160deg,
-                rgba(255, 255, 255, 0.06) 0%,
-                rgba(255, 255, 255, 0.015) 45%,
-                rgba(255, 255, 255, 0.005) 100%);
-        border: 1px solid var(--card-border);
-        -webkit-backdrop-filter: blur(22px);
-        backdrop-filter: blur(22px);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        flex-wrap: wrap;
-        margin-bottom: 64px;
-        animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s backwards;
-    }
-    .price-card::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 10%; right: 10%;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
-    }
-    .theme-gold .price-card { border-color: var(--gold-border); }
-    .theme-gold .price-card::before {
-        background: linear-gradient(90deg, transparent, rgba(255, 183, 3, 0.6), transparent);
-    }
-
-    .price-card__label {
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: var(--text-dim);
-        margin-bottom: 8px;
-    }
-
-    .price-card__value {
-        font-size: 48px;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        color: #eef0f4;
-        background: linear-gradient(180deg, #ffffff, #a0a5b0);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .price-card__value span { font-size: 24px; font-weight: 700; margin-left: 6px; }
-    .theme-gold .price-card__value {
-        color: var(--gold);
-        background: linear-gradient(180deg, #ffe08a, #ffb703);
-        -webkit-background-clip: text;
-        background-clip: text;
-    }
-
-    /* Кнопки */
-    .btn {
+    /* ====== КНОПКА КУПИТЬ ====== */
+    .buy-btn {
         display: inline-block;
-        padding: 17px 44px;
-        border: none;
+        padding: 19px 56px;
         border-radius: 16px;
         font-family: inherit;
         font-size: 14px;
@@ -238,155 +155,37 @@
         box-shadow: 0 10px 28px -10px rgba(77, 18, 230, 0.6);
         transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
     }
-    .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-    .btn--gold {
+    .buy-btn:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+        box-shadow: 0 14px 36px -10px rgba(77, 18, 230, 0.75);
+    }
+    .buy-btn:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.3);
+        outline-offset: 3px;
+    }
+
+    .theme-gold .buy-btn {
         color: #1a1206;
         background: linear-gradient(135deg, #ffb703 0%, #ff9505 100%);
         box-shadow: 0 10px 28px -10px rgba(255, 183, 3, 0.55);
     }
-    .btn--ghost {
-        color: var(--text-dim-strong);
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        box-shadow: none;
-    }
-    .btn--ghost:hover { color: #ffffff; border-color: rgba(255, 255, 255, 0.25); }
-
-    /* Секции */
-    .section { margin-bottom: 64px; animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.25s backwards; }
-
-    .section__title {
-        font-size: clamp(24px, 3.5vw, 32px);
-        font-weight: 800;
-        letter-spacing: 0.02em;
-        text-transform: uppercase;
-        color: #eef0f4;
-        background: linear-gradient(180deg, #ffffff 0%, #a0a5b0 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 28px;
+    .theme-gold .buy-btn:hover {
+        box-shadow: 0 14px 36px -8px rgba(255, 183, 3, 0.6);
     }
 
-    .section__card {
-        padding: 40px;
-        border-radius: 26px;
-        background:
-            linear-gradient(160deg,
-                rgba(255, 255, 255, 0.06) 0%,
-                rgba(255, 255, 255, 0.015) 45%,
-                rgba(255, 255, 255, 0.005) 100%);
-        border: 1px solid var(--card-border);
-        -webkit-backdrop-filter: blur(22px);
-        backdrop-filter: blur(22px);
-    }
-    .theme-gold .section__card { border-color: var(--gold-border); }
-
-    /* Список с галочками */
-    .features {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-    .features li {
-        display: flex;
-        align-items: flex-start;
-        gap: 16px;
-        font-size: 16px;
-        line-height: 1.6;
-        color: var(--text-dim);
-    }
-    .check {
-        flex-shrink: 0;
-        width: 26px;
-        height: 26px;
-        margin-top: 1px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: rgba(46, 204, 113, 0.14);
-        border: 1px solid rgba(46, 204, 113, 0.4);
-        color: var(--check-green);
-        font-size: 13px;
-        font-weight: 700;
-        box-shadow: 0 0 16px rgba(46, 204, 113, 0.55);
-        line-height: 1;
-    }
-    .theme-gold .check {
-        color: var(--gold);
-        background: rgba(255, 183, 3, 0.12);
-        border-color: rgba(255, 183, 3, 0.4);
-        box-shadow: 0 0 16px rgba(255, 183, 3, 0.6);
-    }
-
-    /* Блоки программы */
-    .blocks { display: flex; flex-direction: column; gap: 20px; }
-    .block {
-        padding: 28px 32px;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.025);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        transition: border-color 0.3s ease, transform 0.3s ease;
-    }
-    .block:hover { border-color: rgba(255, 255, 255, 0.14); transform: translateY(-4px); }
-    .theme-gold .block:hover { border-color: rgba(255, 183, 3, 0.35); }
-
-    .block__num {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
-        font-size: 15px;
-        font-weight: 800;
-        color: #ffffff;
-        background: linear-gradient(135deg, #6a2bf2, #4d12e6);
-        margin-bottom: 14px;
-    }
-    .theme-gold .block__num {
-        color: #1a1206;
-        background: linear-gradient(135deg, #ffd768, #ffb703);
-    }
-
-    .block__title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-    .block__text { font-size: 15px; color: var(--text-dim); line-height: 1.65; }
-
-    /* Финальный CTA */
-    .cta {
-        text-align: center;
-        padding: 56px 40px;
-        border-radius: 26px;
-        border: 1px solid var(--card-border);
-        -webkit-backdrop-filter: blur(22px);
-        backdrop-filter: blur(22px);
-        background: linear-gradient(160deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-        animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s backwards;
-    }
-    .theme-gold .cta { border-color: var(--gold-border); }
-    .cta__title { font-size: clamp(22px, 3vw, 30px); font-weight: 800; margin-bottom: 12px; }
-    .cta__text { font-size: 16px; color: var(--text-dim); margin-bottom: 32px; }
-    .cta__buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-
-    /* Анимация появления */
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(32px); }
-        to { opacity: 1; transform: translateY(0); }
+        to   { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 767px) {
         .page { padding: 32px 16px 80px; }
-        .price-card { padding: 32px 26px; }
-        .price-card, .cta__buttons { flex-direction: column; align-items: stretch; }
-        .btn { width: 100%; }
-        .section__card, .cta { padding: 30px 24px; }
-        .block { padding: 24px 22px; }
+        .buy-btn { padding: 18px 44px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .hero, .price-card, .section, .cta { animation: none; }
+        .container { animation: none; }
     }
 </style>
 </head>
@@ -397,163 +196,58 @@
     <div class="glow glow--purple" aria-hidden="true"></div>
     <div class="glow glow--teal" aria-hidden="true"></div>
 
-    <main class="page theme-gold" id="page">
+    <main class="page" id="page">
         <div class="container">
 
             <a class="back-link" href="index.html">Назад к тарифам</a>
 
-            <!-- Шапка -->
-            <header class="hero">
-                <div class="hero__badges" id="badges"></div>
-                <h1 class="hero__title" id="title"></h1>
-                <p class="hero__desc" id="desc"></p>
-            </header>
+            <h1 class="tariff-title" id="tariff-title">Название тарифа</h1>
 
-            <!-- Цена -->
-            <div class="price-card">
-                <div>
-                    <div class="price-card__label">Стоимость тарифа</div>
-                    <div class="price-card__value"><span id="price"></span><span>₽</span></div>
-                </div>
-                <a class="btn" id="buy-btn" href="#">Купить</a>
-            </div>
+            <!-- ЗАГОТОВКА: сюда потом вставим твоё описание -->
+            <p class="tariff-desc" id="tariff-desc">
+                Здесь будет описание тарифа.
+            </p>
 
-            <!-- Что входит -->
-            <section class="section">
-                <h2 class="section__title">Что входит в тариф</h2>
-                <div class="section__card">
-                    <ul class="features" id="features"></ul>
-                </div>
-            </section>
-
-            <!-- Программа -->
-            <section class="section">
-                <h2 class="section__title">Как проходит обучение</h2>
-                <div class="blocks" id="blocks"></div>
-            </section>
-
-            <!-- CTA -->
-            <section class="cta">
-                <div class="cta__title">Готов начать?</div>
-                <p class="cta__text">Оставь заявку — и я свяжусь с тобой, чтобы обсудить старт обучения.</p>
-                <div class="cta__buttons">
-                    <a class="btn" id="cta-buy" href="#">Купить тариф</a>
-                    <a class="btn btn--ghost" href="index.html">Посмотреть другие тарифы</a>
-                </div>
-            </section>
+            <a class="buy-btn" id="buy-btn" href="#">Купить тариф</a>
 
         </div>
     </main>
 
     <script>
         // ============================================================
-        // ВСЕ ТЕКСТЫ ТАРИФОВ — МЕНЯЙ ИХ ЗДЕСЬ
+        // ЗАГОТОВКИ ТАРИФОВ — ПОТОМ ЗАМЕНИМ ТЕКСТ НА ТВОЙ
+        // title   — название тарифа
+        // desc    — описание (сейчас пустое)
+        // link    — ссылка на оплату (сейчас "#", впишешь позже)
+        // vip     — true = золотая тема оформления
         // ============================================================
         const TARIFFS = {
-            "base-ae": {
-                title: "База АЕ",
-                price: "5 000",
-                badges: [],
-                // ОПИСАНИЕ — замени на свой текст
-                desc: "Обучение всем азам After Effects: от интерфейса до первых собственных работ. Готовые уроки, по которым ты будешь обучаться, плюс проекты, которые не попали в мой пак.",
-                features: [
-                    "Обучение всем азам в AE",
-                    "Проекты, которые не попали в мой пак",
-                    "Сможешь освоить базовые знания применения SFX/VFX",
-                    "Готовые уроки, по которым ты будешь обучаться"
-                ],
-                // БЛОКИ ПРОГРАММЫ — замени на свою программу
-                blocks: [
-                    { title: "Знакомство с After Effects", text: "Интерфейс, базовые инструменты и первый проект с нуля." },
-                    { title: "Основы SFX и VFX", text: "Базовые знания применения визуальных и звуковых эффектов." },
-                    { title: "Практика на реальных проектах", text: "Работаешь с проектами, которые не попали в мой пак." }
-                ],
-                vip: false,
-                link: "#"
-            },
-            "motion": {
-                title: "Моушен",
-                price: "10 000",
-                badges: ["Популярное"],
-                desc: "Два месяца обучения с разбором моих личных проектов. Ты не просто смотришь уроки, а видишь, как устроена работа изнутри, и учишься находить первых клиентов.",
-                features: [
-                    "2 месяца обучения",
-                    "Разборы моих личных проектов",
-                    "Различные способы по поиску первых клиентов"
-                ],
-                blocks: [
-                    { title: "Месяц 1: практика и разборы", text: "Учимся на живых примерах — разбираю свои личные проекты." },
-                    { title: "Месяц 2: первые клиенты", text: "Разбираем способы поиска клиентов и выход на первый заказ." }
-                ],
-                vip: false,
-                link: "#"
-            },
-            "3d": {
-                title: "3Д Графика",
-                price: "15 000",
-                badges: [],
-                desc: "Обучение базе в Blender: моделирование с нуля на готовых уроках и связка 3D-графики с After Effects для полноценных сцен.",
-                features: [
-                    "Обучение базе в Blender",
-                    "Готовые уроки по моделированию",
-                    "Применение в AE"
-                ],
-                blocks: [
-                    { title: "База Blender", text: "Интерфейс, навигация и первые модели." },
-                    { title: "Моделирование", text: "Готовые уроки по моделированию от простого к сложному." },
-                    { title: "Связка с AE", text: "Как применять 3D-графику в своих монтажных проектах." }
-                ],
-                vip: false,
-                link: "#"
-            },
-            "vip": {
-                title: "Все включено",
-                price: "24 000",
-                badges: ["VIP", "Лучший выбор"],
-                desc: "Максимальный тариф: всё из предыдущих пакетов, постоянная связь со мной и личная помощь в выходе на первого клиента.",
-                features: [
-                    "Получите все перечисленное выше",
-                    "Постоянная связь со мной",
-                    "Также помогу выйти на 1 клиента"
-                ],
-                blocks: [
-                    { title: "Всё из тарифов выше", text: "База AE, Моушен и 3D-графика в одном пакете." },
-                    { title: "Постоянная связь", text: "Всегда на связи — отвечаю на вопросы по ходу обучения." },
-                    { title: "Первый клиент", text: "Помогаю выйти на первого клиента и получить первый заказ." }
-                ],
-                vip: true,
-                link: "#"
-            }
+            "base-ae": { title: "База АЕ",        desc: "", link: "#", vip: false },
+            "motion":  { title: "Моушен",         desc: "", link: "#", vip: false },
+            "3d":      { title: "3Д Графика",     desc: "", link: "#", vip: false },
+            "vip":     { title: "Все включено",   desc: "", link: "#", vip: true  }
         };
 
-        // ====== РЕНДЕР СТРАНИЦЫ ПО ПАРАМЕТРУ ?id= ======
         const params = new URLSearchParams(window.location.search);
         const id = params.get("id") || "base-ae";
         const t = TARIFFS[id] || TARIFFS["base-ae"];
 
-        document.title = t.title + " — Тариф | Школа видеомонтажа и 3D-графики";
-        document.getElementById("title").textContent = t.title;
-        document.getElementById("desc").textContent = t.desc;
-        document.getElementById("price").textContent = t.price;
-
-        document.getElementById("badges").innerHTML =
-            t.badges.map(b => '<span class="badge' + (t.vip ? ' badge--gold' : '') + '">' + b + '</span>').join("");
-
-        document.getElementById("features").innerHTML =
-            t.features.map(f => '<li><span class="check">✓</span><span>' + f + '</span></li>').join("");
-
-        document.getElementById("blocks").innerHTML =
-            t.blocks.map((b, i) =>
-                '<div class="block">' +
-                    '<span class="block__num">' + (i + 1) + '</span>' +
-                    '<div class="block__title">' + b.title + '</div>' +
-                    '<div class="block__text">' + b.text + '</div>' +
-                '</div>').join("");
-
+        document.title = t.title;
+        document.getElementById("tariff-title").textContent = t.title;
         document.getElementById("buy-btn").href = t.link;
-        document.getElementById("cta-buy").href = t.link;
 
-        // Ripples
+        const descEl = document.getElementById("tariff-desc");
+        if (t.desc && t.desc.trim() !== "") {
+            descEl.textContent = t.desc;
+        } else {
+            descEl.textContent = "Здесь будет описание тарифа."; // заглушка до твоего текста
+        }
+
+        if (t.vip) {
+            document.getElementById("page").classList.add("theme-gold");
+        }
+
+        // Рябь
         $(document).ready(function() {
             $("#ripple").ripples({
                 resolution: 512,
