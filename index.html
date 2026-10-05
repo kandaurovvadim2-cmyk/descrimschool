@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тарифы обучения</title>
     <style>
-        /* Базовые сбросы */
+        /* Базовые сбросы стилей */
         * {
             margin: 0;
             padding: 0;
@@ -13,17 +13,16 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* SaaS Глубокий фон с сеткой и градиентными сферами */
+        /* Премиальный SaaS-фон с сеткой и неоновым свечением */
         body {
             background-color: #08090d;
-            /* Эффект сетки (Grid Lines) */
             background-image: 
                 linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
             background-size: 40px 40px;
             background-position: center top;
             color: #ffffff;
-            padding: 80px 20px;
+            padding: 60px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -32,69 +31,72 @@
             position: relative;
         }
 
-        /* Размытые неоновые сферы на фоне */
+        /* Задний светящийся фон (градиентные сферы) */
         body::before, body::after {
             content: "";
             position: absolute;
-            width: 400px;
-            height: 400px;
+            width: 450px;
+            height: 450px;
             border-radius: 50%;
-            filter: blur(140px);
+            filter: blur(150px);
             z-index: -1;
-            opacity: 0.35;
+            opacity: 0.3;
             pointer-events: none;
-            animation: pulseGlow 8s infinite alternate ease-in-out;
+            animation: pulseGlow 10s infinite alternate ease-in-out;
         }
 
         body::before {
             background: radial-gradient(circle, #4d12e6 0%, transparent 70%);
-            top: -100px;
-            left: -100px;
+            top: -50px;
+            left: -50px;
         }
 
         body::after {
             background: radial-gradient(circle, #2ec4b6 0%, transparent 70%);
-            bottom: 100px;
-            right: -100px;
-            animation-delay: 4s;
+            bottom: 50px;
+            right: -50px;
+            animation-delay: 5s;
         }
 
         @keyframes pulseGlow {
-            0% { transform: scale(1) translate(0, 0); opacity: 0.25; }
-            100% { transform: scale(1.2) translate(30px, 20px); opacity: 0.45; }
+            0% { transform: scale(1) translate(0, 0); opacity: 0.2; }
+            100% { transform: scale(1.15) translate(20px, 15px); opacity: 0.35; }
         }
 
-        /* Заголовок в стиле современных лендингов */
+        /* Стильный SaaS-заголовок */
         h1.page-title {
             font-size: 3rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 60px;
+            margin-bottom: 50px;
             width: 100%;
-            max-width: 1280px;
+            max-width: 1240px;
             text-align: left;
             font-weight: 900;
-            background: linear-gradient(135deg, #ffffff 30%, #a5aab4 100%);
+            background: linear-gradient(135deg, #ffffff 40%, #8a8d98 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: fadeInDown 0.8s ease-out forwards;
+            animation: fadeInDown 0.6s ease-out forwards;
         }
 
-        /* Обновленная адаптивная сетка (карточки сжимаются, чтобы влезть в один ряд) */
-        .tariff-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(220px, 1fr));
-            gap: 20px;
-            max-width: 1280px;
+        /* Контейнер, удерживающий все 4 карточки в один ряд */
+        .tariff-wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 16px;
             width: 100%;
+            max-width: 1240px;
         }
 
-        /* Премиальная стеклянная карточка */
+        /* Стеклянные карточки */
         .card {
+            flex: 1 1 0px; /* Делит экран на 4 абсолютно равные части */
+            min-width: 0;   /* Предотвращает разрывы блоков и выход за границы */
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 32px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 22px;
+            padding: 32px 20px;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -104,36 +106,33 @@
                         border-color 0.4s ease, 
                         box-shadow 0.4s ease;
             
-            /* Скрытие для анимации появления */
+            /* Каскадная анимация появления */
             opacity: 0;
-            transform: translateY(40px);
-            animation: fadeInUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
         }
 
-        /* Очередь анимации (каскадный вылет карточек) */
-        .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.25s; }
-        .card:nth-child(3) { animation-delay: 0.4s; }
-        .card:nth-child(4) { animation-delay: 0.55s; }
+        /* Задержки анимации для эффекта поочередного вылета */
+        .card:nth-child(1) { animation-delay: 0.05s; }
+        .card:nth-child(2) { animation-delay: 0.15s; }
+        .card:nth-child(3) { animation-delay: 0.25s; }
+        .card:nth-child(4) { animation-delay: 0.35s; }
 
-        /* Плавный подъем и неоновое отражение при наведении */
         .card:hover {
-            transform: translateY(-8px) scale(1.01);
-            border-color: rgba(114, 18, 230, 0.35);
-            box-shadow: 0 20px 40px rgba(114, 18, 230, 0.12), 
-                        0 0 1px rgba(114, 18, 230, 0.2);
+            transform: translateY(-8px);
+            border-color: rgba(114, 18, 230, 0.45);
+            box-shadow: 0 15px 35px rgba(114, 18, 230, 0.18);
         }
 
-        /* Выделение тарифа "Все включено" */
+        /* Выделение тарифа "Все включено" золотом */
         .card.vip {
-            border: 1px solid rgba(255, 183, 3, 0.15);
+            border: 1px solid rgba(255, 183, 3, 0.18);
             background: linear-gradient(135deg, rgba(255, 183, 3, 0.02) 0%, rgba(255, 255, 255, 0.005) 100%);
         }
         
         .card.vip:hover {
-            border-color: rgba(255, 183, 3, 0.4);
-            box-shadow: 0 20px 40px rgba(255, 183, 3, 0.1),
-                        0 0 1px rgba(255, 183, 3, 0.2);
+            border-color: rgba(255, 183, 3, 0.45);
+            box-shadow: 0 15px 35px rgba(255, 183, 3, 0.15);
         }
 
         .card-header {
@@ -141,14 +140,14 @@
         }
 
         .card-title {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: -0.01em;
             color: #f5f5f7;
         }
 
-        /* Кастомный список фич */
+        /* Списки фич с галочками */
         .features-list {
             list-style: none;
             margin-bottom: 32px;
@@ -156,13 +155,13 @@
         }
 
         .features-list li {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: #b0b3b8;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            line-height: 1.4;
+            line-height: 1.45;
             transition: color 0.3s ease;
         }
 
@@ -170,90 +169,84 @@
             color: #e2e4e9;
         }
 
-        /* Точки-галочки с красивым свечением */
+        /* Круглые неоновые галочки */
         .features-list li::before {
             content: "✓";
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             background-color: #2ec4b6;
             color: #08090d;
             border-radius: 50%;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: bold;
             flex-shrink: 0;
             margin-top: 2px;
-            box-shadow: 0 0 10px rgba(46, 196, 182, 0.4);
+            box-shadow: 0 0 8px rgba(46, 196, 182, 0.35);
         }
 
-        /* Меняем цвет галочек для VIP тарифа */
         .card.vip .features-list li::before {
             background-color: #ffb703;
-            box-shadow: 0 0 10px rgba(255, 183, 3, 0.4);
+            box-shadow: 0 0 8px rgba(255, 183, 3, 0.35);
         }
 
-        /* Футер карточки */
+        /* Подвал карточки с ценой и кнопкой */
         .card-footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 10px;
             margin-top: auto;
         }
 
         .current-price {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 800;
             white-space: nowrap;
-            letter-spacing: -0.02em;
             color: #ffffff;
         }
 
-        /* Стильная SaaS кнопка */
+        /* Неоновые SaaS кнопки */
         .btn-more {
             background: linear-gradient(90deg, #4d12e6 0%, #7212e6 100%);
             color: #ffffff;
             text-decoration: none;
-            padding: 12px 16px;
+            padding: 12px 14px;
             border-radius: 12px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.05em;
             border: none;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-            box-shadow: 0 4px 15px rgba(114, 18, 230, 0.25);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(114, 18, 230, 0.2);
             text-align: center;
             flex-grow: 1;
+            white-space: nowrap;
         }
 
         .btn-more:hover {
-            box-shadow: 0 6px 25px rgba(114, 18, 230, 0.55), 
-                        0 0 0 2px rgba(255, 255, 255, 0.1);
-            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(114, 18, 230, 0.5);
+            transform: scale(1.02);
         }
 
-        .btn-more:active {
-            transform: scale(0.98);
-        }
-
-        /* Золотая кнопка для "Все включено" */
+        /* Золотая кнопка для тарифа "Все включено" */
         .card.vip .btn-more {
             background: linear-gradient(90deg, #ff9f1c 0%, #ffb703 100%);
-            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2);
+            box-shadow: 0 4px 12px rgba(255, 183, 3, 0.15);
             color: #08090d;
         }
+        
         .card.vip .btn-more:hover {
-            box-shadow: 0 6px 25px rgba(255, 183, 3, 0.5),
-                        0 0 0 2px rgba(255, 255, 255, 0.15);
+            box-shadow: 0 6px 20px rgba(255, 183, 3, 0.45);
         }
 
-        /* Анимации загрузки */
+        /* Анимации */
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -261,28 +254,30 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Адаптивность под планшеты и смартфоны */
+        /* Адаптивный перенос: 2х2 на планшетах, 1 столбец на мобильных */
         @media (max-width: 1024px) {
-            .tariff-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 24px;
+            .tariff-wrapper {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            .card {
+                flex: 1 1 calc(50% - 10px);
+                min-width: 250px;
             }
         }
 
-        @media (max-width: 650px) {
-            .tariff-grid {
-                grid-template-columns: 1fr;
+        @media (max-width: 600px) {
+            .tariff-wrapper {
+                flex-direction: column;
+            }
+            .card {
+                flex: 1 1 auto;
+                width: 100%;
             }
             h1.page-title {
                 font-size: 2.3rem;
                 text-align: center;
-                margin-bottom: 40px;
-            }
-            body {
-                padding: 50px 16px;
-            }
-            .card {
-                padding: 30px 20px;
+                margin-bottom: 35px;
             }
         }
     </style>
@@ -291,7 +286,7 @@
 
     <h1 class="page-title">Тарифы</h1>
 
-    <main class="tariff-grid">
+    <main class="tariff-wrapper">
 
         <!-- Тариф 1: БАЗА АЕ -->
         <div class="card">
@@ -311,3 +306,11 @@
                 <a href="#" class="btn-more">Подробнее</a>
             </div>
         </div>
+
+        <!-- Тариф 2: МОУШЕН -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Моушен</div>
+            </div>
+            <ul class="features-list">
+                <li>2 месяца обучения</li>
