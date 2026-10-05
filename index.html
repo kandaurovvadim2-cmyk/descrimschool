@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Тарифы — Школа видеомонтажа и 3D-графики</title>
 <style>
+    /* ====== FONTS ====== */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
     /* ====== RESET & BASE ====== */
     *, *::before, *::after {
         margin: 0;
@@ -22,6 +25,7 @@
         --gold-border: rgba(255, 183, 3, 0.18);
         --text-main: #f5f6fa;
         --text-dim: rgba(235, 237, 245, 0.62);
+        --text-dim-strong: rgba(235, 237, 245, 0.82);
     }
 
     html {
@@ -29,13 +33,13 @@
     }
 
     body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                     "Helvetica Neue", Arial, sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         background-color: var(--bg);
         color: var(--text-main);
         min-height: 100vh;
         overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
     }
 
     /* ====== BACKGROUND: GRID + GLOW SPHERES ====== */
@@ -48,7 +52,6 @@
             linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
         background-size: 40px 40px;
-        /* мягкое затухание сетки к краям */
         -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 40%, transparent 100%);
         mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 40%, transparent 100%);
     }
@@ -105,23 +108,24 @@
     }
 
     .page__title {
-        font-size: clamp(44px, 7vw, 76px);
+        font-size: clamp(48px, 8vw, 82px);
         font-weight: 800;
-        letter-spacing: 0.04em;
+        letter-spacing: -0.02em;
         line-height: 1.05;
         text-align: center;
-        background: linear-gradient(180deg, #ffffff 0%, #8a8f9c 100%);
+        background: linear-gradient(180deg, #ffffff 0%, #a0a5b0 100%);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 16px;
+        text-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
     .page__subtitle {
         font-size: 16px;
         color: var(--text-dim);
         text-align: center;
-        max-width: 520px;
+        max-width: 560px;
         margin-bottom: 64px;
         line-height: 1.6;
     }
@@ -129,11 +133,11 @@
     /* ====== GRID: 2x2 on desktop, 1 column on mobile ====== */
     .pricing {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 440px));
-        gap: 28px;
+        grid-template-columns: repeat(2, minmax(0, 460px));
+        gap: 32px;
         justify-content: center;
         width: 100%;
-        max-width: 940px;
+        max-width: 980px;
     }
 
     /* ====== CARD (Glassmorphism) ====== */
@@ -141,30 +145,29 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        padding: 40px 36px 36px;
-        border-radius: 24px;
+        padding: 44px 38px 40px;
+        border-radius: 26px;
         background:
             linear-gradient(160deg,
-                rgba(255, 255, 255, 0.055) 0%,
+                rgba(255, 255, 255, 0.06) 0%,
                 rgba(255, 255, 255, 0.015) 45%,
                 rgba(255, 255, 255, 0.005) 100%);
         border: 1px solid var(--card-border);
-        -webkit-backdrop-filter: blur(20px);
-        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(22px);
+        backdrop-filter: blur(22px);
         overflow: hidden;
         opacity: 0;
-        transform: translateY(36px);
-        animation: cardIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        transform: translateY(40px);
+        animation: cardIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
                     border-color 0.35s ease,
                     box-shadow 0.35s ease;
     }
 
-    /* задержки появления для каскадной анимации */
     .card:nth-child(1) { animation-delay: 0.10s; }
-    .card:nth-child(2) { animation-delay: 0.22s; }
-    .card:nth-child(3) { animation-delay: 0.34s; }
-    .card:nth-child(4) { animation-delay: 0.46s; }
+    .card:nth-child(2) { animation-delay: 0.20s; }
+    .card:nth-child(3) { animation-delay: 0.30s; }
+    .card:nth-child(4) { animation-delay: 0.40s; }
 
     @keyframes cardIn {
         to {
@@ -174,20 +177,19 @@
     }
 
     .card:hover {
-        transform: translateY(-10px);
+        transform: translateY(-12px);
         border-color: rgba(255, 255, 255, 0.14);
         box-shadow:
-            0 24px 60px -20px rgba(77, 18, 230, 0.35),
-            0 8px 30px -12px rgba(0, 0, 0, 0.6);
+            0 26px 64px -20px rgba(77, 18, 230, 0.38),
+            0 8px 32px -12px rgba(0, 0, 0, 0.6);
     }
 
     .card--vip:hover {
         box-shadow:
-            0 24px 60px -18px rgba(255, 183, 3, 0.30),
-            0 8px 30px -12px rgba(0, 0, 0, 0.6);
+            0 26px 64px -18px rgba(255, 183, 3, 0.32),
+            0 8px 32px -12px rgba(0, 0, 0, 0.6);
     }
 
-    /* блик сверху карточки */
     .card::before {
         content: "";
         position: absolute;
@@ -197,7 +199,7 @@
         height: 1px;
         background: linear-gradient(90deg,
             transparent,
-            rgba(255, 255, 255, 0.28),
+            rgba(255, 255, 255, 0.32),
             transparent);
     }
 
@@ -206,29 +208,29 @@
         border-color: var(--gold-border);
         background:
             linear-gradient(160deg,
-                rgba(255, 183, 3, 0.06) 0%,
-                rgba(255, 255, 255, 0.02) 50%,
+                rgba(255, 183, 3, 0.08) 0%,
+                rgba(255, 255, 255, 0.025) 50%,
                 rgba(255, 255, 255, 0.005) 100%),
             linear-gradient(160deg,
-                rgba(255, 255, 255, 0.045) 0%,
-                rgba(255, 255, 255, 0.012) 100%);
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.015) 100%);
     }
 
     .card--vip::before {
         background: linear-gradient(90deg,
             transparent,
-            rgba(255, 183, 3, 0.55),
+            rgba(255, 183, 3, 0.6),
             transparent);
     }
 
     .card--vip .card__title { color: var(--gold); }
-    .card--vip .check { color: var(--gold); box-shadow: 0 0 14px rgba(255, 183, 3, 0.55); }
+    .card--vip .check { color: var(--gold); box-shadow: 0 0 16px rgba(255, 183, 3, 0.6); }
     .card--vip .card__btn {
         background: linear-gradient(135deg, #ffb703 0%, #ff9505 100%);
         color: #1a1206;
     }
     .card--vip .card__btn:hover {
-        box-shadow: 0 10px 30px -8px rgba(255, 183, 3, 0.55);
+        box-shadow: 0 12px 36px -8px rgba(255, 183, 3, 0.55);
     }
 
     /* ====== CONTENT CARD ====== */
@@ -241,9 +243,9 @@
     }
 
     .card__title {
-        font-size: 21px;
+        font-size: 22px;
         font-weight: 800;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
     }
 
@@ -264,14 +266,14 @@
         display: flex;
         align-items: baseline;
         gap: 8px;
-        margin: 14px 0 26px;
+        margin: 16px 0 28px;
     }
 
     .card__price-value {
-        font-size: 40px;
+        font-size: 44px;
         font-weight: 800;
-        letter-spacing: -0.02em;
-        background: linear-gradient(180deg, #ffffff, #9aa0ad);
+        letter-spacing: -0.03em;
+        background: linear-gradient(180deg, #ffffff, #a0a5b0);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -284,18 +286,18 @@
     }
 
     .card__price-currency {
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--text-dim);
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text-dim-strong);
     }
 
     .card__divider {
         height: 1px;
         background: linear-gradient(90deg,
             transparent,
-            rgba(255, 255, 255, 0.10),
+            rgba(255, 255, 255, 0.12),
             transparent);
-        margin-bottom: 26px;
+        margin-bottom: 28px;
     }
 
     /* ====== FEATURES ====== */
@@ -303,9 +305,9 @@
         list-style: none;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 18px;
         flex-grow: 1;
-        margin-bottom: 32px;
+        margin-bottom: 34px;
     }
 
     .card__features li {
@@ -315,34 +317,58 @@
         font-size: 15px;
         line-height: 1.55;
         color: var(--text-dim);
+        opacity: 0;
+        transform: translateY(10px);
+        animation: featureIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
-    /* галочка — чистый CSS + Unicode, неоновая тень */
+    .card:nth-child(1) .card__features li { animation-delay: 0.30s; }
+    .card:nth-child(2) .card__features li { animation-delay: 0.40s; }
+    .card:nth-child(3) .card__features li { animation-delay: 0.50s; }
+    .card:nth-child(4) .card__features li { animation-delay: 0.60s; }
+
+    @keyframes featureIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
     .check {
         flex-shrink: 0;
-        width: 22px;
-        height: 22px;
-        margin-top: 1px;
+        width: 24px;
+        height: 24px;
+        margin-top: 2px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        background: rgba(46, 204, 113, 0.12);
-        border: 1px solid rgba(46, 204, 113, 0.35);
+        background: rgba(46, 204, 113, 0.14);
+        border: 1px solid rgba(46, 204, 113, 0.4);
         color: var(--check-green);
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 700;
-        box-shadow: 0 0 14px rgba(46, 204, 113, 0.55);
+        box-shadow: 0 0 16px rgba(46, 204, 113, 0.55);
         line-height: 1;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card:hover .check {
+        transform: scale(1.08);
+        box-shadow: 0 0 22px rgba(46, 204, 113, 0.7);
+    }
+
+    .card--vip:hover .check {
+        box-shadow: 0 0 24px rgba(255, 183, 3, 0.7);
     }
 
     /* ====== BUTTON ====== */
     .card__btn {
         display: block;
         width: 100%;
-        padding: 15px 20px;
+        padding: 16px 20px;
         border: none;
-        border-radius: 14px;
+        border-radius: 16px;
         font-family: inherit;
         font-size: 14px;
         font-weight: 700;
@@ -352,18 +378,23 @@
         cursor: pointer;
         color: #ffffff;
         background: linear-gradient(135deg, #6a2bf2 0%, #4d12e6 100%);
-        box-shadow: 0 10px 26px -10px rgba(77, 18, 230, 0.6);
+        box-shadow: 0 10px 28px -10px rgba(77, 18, 230, 0.6);
         transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
     }
 
     .card__btn:hover {
         transform: translateY(-2px);
         filter: brightness(1.1);
-        box-shadow: 0 14px 34px -10px rgba(77, 18, 230, 0.75);
+        box-shadow: 0 14px 36px -10px rgba(77, 18, 230, 0.75);
     }
 
     .card__btn:active {
         transform: translateY(0);
+    }
+
+    .card__btn:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.3);
+        outline-offset: 2px;
     }
 
     /* ====== RESPONSIVE ====== */
@@ -373,118 +404,21 @@
         }
         .pricing {
             grid-template-columns: 1fr;
-            gap: 22px;
+            gap: 24px;
         }
         .card {
-            padding: 32px 26px 30px;
+            padding: 34px 28px 32px;
         }
         .card__price-value {
-            font-size: 34px;
+            font-size: 38px;
+        }
+        .card__title {
+            font-size: 20px;
         }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .card {
+        .card, .card__features li {
             animation: none;
             opacity: 1;
-            transform: none;
-            transition: none;
-        }
-    }
-</style>
-</head>
-<body>
-
-    <!-- Фоновая сетка -->
-    <div class="bg-grid" aria-hidden="true"></div>
-
-    <!-- Декоративные сферы свечения -->
-    <div class="glow glow--purple" aria-hidden="true"></div>
-    <div class="glow glow--teal" aria-hidden="true"></div>
-
-    <main class="page">
-        <span class="page__eyebrow">Обучение монтажу и 3D-графике</span>
-        <h1 class="page__title">ТАРИФЫ</h1>
-        <p class="page__subtitle">Выберите подходящий формат обучения — от базовых навыков до полного погружения в профессию.</p>
-
-        <div class="pricing">
-
-            <!-- КАРТА 1: БАЗА АЕ -->
-            <article class="card">
-                <div class="card__head">
-                    <h2 class="card__title">База АЕ</h2>
-                </div>
-                <div class="card__price">
-                    <span class="card__price-value">5 000</span>
-                    <span class="card__price-currency">₽</span>
-                </div>
-                <div class="card__divider"></div>
-                <ul class="card__features">
-                    <li><span class="check">✓</span><span>Обучение всем азам в AE</span></li>
-                    <li><span class="check">✓</span><span>Проекты, которые не попали в мой пак</span></li>
-                    <li><span class="check">✓</span><span>Сможете освоить базовые знания применения SFX\VFX</span></li>
-                    <li><span class="check">✓</span><span>Готовые уроки, по которым вы будете обучаться</span></li>
-                </ul>
-                <button class="card__btn" type="button">Подробнее</button>
-            </article>
-
-            <!-- КАРТА 2: МОУШЕН -->
-            <article class="card">
-                <div class="card__head">
-                    <h2 class="card__title">Моушен</h2>
-                </div>
-                <div class="card__price">
-                    <span class="card__price-value">10 000</span>
-                    <span class="card__price-currency">₽</span>
-                </div>
-                <div class="card__divider"></div>
-                <ul class="card__features">
-                    <li><span class="check">✓</span><span>2 месяца обучения</span></li>
-                    <li><span class="check">✓</span><span>Разборы моих личных проектов</span></li>
-                    <li><span class="check">✓</span><span>Различные способы по поиску первых клиентов</span></li>
-                </ul>
-                <button class="card__btn" type="button">Подробнее</button>
-            </article>
-
-            <!-- КАРТА 3: 3Д ГРАФИКА -->
-            <article class="card">
-                <div class="card__head">
-                    <h2 class="card__title">3Д Графика</h2>
-                </div>
-                <div class="card__price">
-                    <span class="card__price-value">15 000</span>
-                    <span class="card__price-currency">₽</span>
-                </div>
-                <div class="card__divider"></div>
-                <ul class="card__features">
-                    <li><span class="check">✓</span><span>Обучение базе в Blender</span></li>
-                    <li><span class="check">✓</span><span>Готовые уроки по моделированию</span></li>
-                    <li><span class="check">✓</span><span>Применение в AE</span></li>
-                </ul>
-                <button class="card__btn" type="button">Подробнее</button>
-            </article>
-
-            <!-- КАРТА 4: ВСЕ ВКЛЮЧЕНО (VIP) -->
-            <article class="card card--vip">
-                <div class="card__head">
-                    <h2 class="card__title">Все включено</h2>
-                    <span class="card__badge">VIP</span>
-                </div>
-                <div class="card__price">
-                    <span class="card__price-value">24 000</span>
-                    <span class="card__price-currency">₽</span>
-                </div>
-                <div class="card__divider"></div>
-                <ul class="card__features">
-                    <li><span class="check">✓</span><span>Получите все перечисленное выше</span></li>
-                    <li><span class="check">✓</span><span>Постоянная связь со мной</span></li>
-                    <li><span class="check">✓</span><span>Также помогу выйти на 1 клиента</span></li>
-                </ul>
-                <button class="card__btn" type="button">Подробнее</button>
-            </article>
-
-        </div>
-    </main>
-
-</body>
-</html>
+            transform:
