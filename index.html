@@ -5,11 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Тарифы — Школа видеомонтажа и 3D-графики</title>
 
-<!-- Шрифт грузится асинхронно: не блокирует отрисовку страницы -->
+<!-- Шрифт -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"></noscript>
+
+<!-- Подключаем jQuery (нужен для плагина ряби) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Подключаем плагин ряби -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
 
 <style>
     /* ====== RESET & BASE ====== */
@@ -40,13 +45,26 @@
         overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
+        /* Убираем скроллбар для красоты */
+        overflow-y: auto;
     }
 
-    /* ====== ФОН: СЕТКА + СВЕЧЕНИЕ ====== */
-    .bg-grid {
+    /* ====== ВОДНЫЙ ЭФФЕКТ (RIPPLE) ====== */
+    /* Этот слой будет искажаться. Он должен быть просто темным цветом */
+    .ripple-layer {
         position: fixed;
         inset: 0;
         z-index: 0;
+        background-color: var(--bg);
+        pointer-events: none; /* Чтобы клики проходили сквозь фон */
+    }
+
+    /* ====== ФОН: СЕТКА И СВЕЧЕНИЕ (ПОВЕРХ ВОДЫ) ====== */
+    /* Они остаются четкими, так как лежат выше ripple-layer */
+    .bg-grid {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
         pointer-events: none;
         background-image:
             linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
@@ -61,7 +79,7 @@
         border-radius: 50%;
         filter: blur(150px);
         opacity: 0.3;
-        z-index: 0;
+        z-index: 1;
         pointer-events: none;
     }
 
@@ -84,7 +102,7 @@
     /* ====== РАЗМЕТКА СТРАНИЦЫ ====== */
     .page {
         position: relative;
-        z-index: 1;
+        z-index: 10; /* Карточки поверх всего */
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -113,7 +131,6 @@
         letter-spacing: -0.02em;
         line-height: 1.05;
         text-align: center;
-        /* запасной цвет, если градиентный текст не поддерживается */
         color: #eef0f4;
         background: linear-gradient(180deg, #ffffff 0%, #a0a5b0 100%);
         -webkit-background-clip: text;
@@ -157,7 +174,6 @@
         -webkit-backdrop-filter: blur(22px);
         backdrop-filter: blur(22px);
         overflow: hidden;
-        /* карточка видна по умолчанию; анимация лишь «поднимает» её */
         animation: cardIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
                     border-color 0.35s ease,
@@ -170,14 +186,8 @@
     .card:nth-child(4) { animation-delay: 0.40s; }
 
     @keyframes cardIn {
-        from {
-            opacity: 0;
-            transform: translateY(40px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .card:hover {
@@ -326,6 +336,7 @@
         animation: featureIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
+    /* Задержки анимации для пунктов списка */
     .card:nth-child(1) .card__features li:nth-child(1) { animation-delay: 0.30s; }
     .card:nth-child(1) .card__features li:nth-child(2) { animation-delay: 0.38s; }
     .card:nth-child(1) .card__features li:nth-child(3) { animation-delay: 0.46s; }
@@ -341,14 +352,8 @@
     .card:nth-child(4) .card__features li:nth-child(3) { animation-delay: 0.76s; }
 
     @keyframes featureIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .check {
@@ -416,33 +421,24 @@
 
     /* ====== АДАПТИВ ====== */
     @media (max-width: 767px) {
-        .page {
-            padding: 64px 16px 80px;
-        }
-        .pricing {
-            grid-template-columns: 1fr;
-            gap: 24px;
-        }
-        .card {
-            padding: 34px 28px 32px;
-        }
-        .card__price-value {
-            font-size: 38px;
-        }
-        .card__title {
-            font-size: 20px;
-        }
+        .page { padding: 64px 16px 80px; }
+        .pricing { grid-template-columns: 1fr; gap: 24px; }
+        .card { padding: 34px 28px 32px; }
+        .card__price-value { font-size: 38px; }
+        .card__title { font-size: 20px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .card, .card__features li {
-            animation: none;
-        }
+        .card, .card__features li { animation: none; }
     }
 </style>
 </head>
 <body>
 
+    <!-- ВОДНЫЙ СЛОЙ (ИСКАЖАЕТСЯ) -->
+    <div class="ripple-layer" id="ripple"></div>
+
+    <!-- ФОН (ЧЕТКИЙ) -->
     <div class="bg-grid" aria-hidden="true"></div>
     <div class="glow glow--purple" aria-hidden="true"></div>
     <div class="glow glow--teal" aria-hidden="true"></div>
@@ -527,5 +523,17 @@
         </div>
     </main>
 
+    <!-- ИНИЦИАЛИЗАЦИЯ ЭФФЕКТА -->
+    <script>
+        \$(document).ready(function() {
+            // Инициализируем рябь на элементе с id="ripple"
+            \$('#ripple').ripples({
+                resolution: 512,       // Чем выше, тем детальнее, но тяжелее для GPU
+                dropRadius: 20,        // Радиус капли (размер волны)
+                perturbance: 0.04,     // Сила искажения (0.01 - легкая рябь, 0.1 - сильное искажение)
+                interactive: true      // Реагировать на курсор
+            });
+        });
+    </script>
 </body>
 </html>
