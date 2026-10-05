@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тарифы обучения</title>
     <style>
-        /* Базовые сбросы стилей */
+        /* Базовые сбросы */
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +13,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* Премиальный SaaS-фон с сеткой и неоновым свечением */
+        /* SaaS Глубокий фон с сеткой и градиентными сферами */
         body {
             background-color: #08090d;
             background-image: 
@@ -31,7 +31,7 @@
             position: relative;
         }
 
-        /* Задний светящийся фон (градиентные сферы) */
+        /* Размытые неоновые сферы на фоне */
         body::before, body::after {
             content: "";
             position: absolute;
@@ -63,14 +63,14 @@
             100% { transform: scale(1.15) translate(20px, 15px); opacity: 0.35; }
         }
 
-        /* Стильный SaaS-заголовок */
+        /* Заголовок */
         h1.page-title {
             font-size: 3rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 50px;
             width: 100%;
-            max-width: 1240px;
+            max-width: 1280px;
             text-align: left;
             font-weight: 900;
             background: linear-gradient(135deg, #ffffff 40%, #8a8d98 100%);
@@ -79,24 +79,26 @@
             animation: fadeInDown 0.6s ease-out forwards;
         }
 
-        /* Контейнер, удерживающий все 4 карточки в один ряд */
+        /* Безопасный гибкий контейнер с автопереносом строк */
         .tariff-wrapper {
             display: flex;
             flex-direction: row;
-            justify-content: space-between;
-            gap: 16px;
+            flex-wrap: wrap; /* Позволяет карточкам падать вниз, если экран слишком узкий, а не пропадать */
+            justify-content: center; /* Центрирует карточки при переносе */
+            gap: 20px;
             width: 100%;
-            max-width: 1240px;
+            max-width: 1280px;
         }
 
-        /* Стеклянные карточки */
+        /* Адаптивная стеклянная карточка */
         .card {
-            flex: 1 1 0px; /* Делит экран на 4 абсолютно равные части */
-            min-width: 0;   /* Предотвращает разрывы блоков и выход за границы */
+            flex: 1 1 calc(25% - 20px); /* Пытается занять 25% ширины, если позволяет экран */
+            min-width: 280px; /* Минимальная комфортная ширина карточки, ниже которой она перенесется */
+            max-width: 310px; /* Ограничение максимальной ширины для сохранения пропорций */
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 22px;
-            padding: 32px 20px;
+            padding: 32px 22px;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -112,7 +114,7 @@
             animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
         }
 
-        /* Задержки анимации для эффекта поочередного вылета */
+        /* Задержки анимации */
         .card:nth-child(1) { animation-delay: 0.05s; }
         .card:nth-child(2) { animation-delay: 0.15s; }
         .card:nth-child(3) { animation-delay: 0.25s; }
@@ -124,7 +126,7 @@
             box-shadow: 0 15px 35px rgba(114, 18, 230, 0.18);
         }
 
-        /* Выделение тарифа "Все включено" золотом */
+        /* Золотой VIP тариф "Все включено" */
         .card.vip {
             border: 1px solid rgba(255, 183, 3, 0.18);
             background: linear-gradient(135deg, rgba(255, 183, 3, 0.02) 0%, rgba(255, 255, 255, 0.005) 100%);
@@ -169,7 +171,6 @@
             color: #e2e4e9;
         }
 
-        /* Круглые неоновые галочки */
         .features-list li::before {
             content: "✓";
             display: flex;
@@ -192,7 +193,7 @@
             box-shadow: 0 0 8px rgba(255, 183, 3, 0.35);
         }
 
-        /* Подвал карточки с ценой и кнопкой */
+        /* Подвал карточки */
         .card-footer {
             display: flex;
             align-items: center;
@@ -208,7 +209,7 @@
             color: #ffffff;
         }
 
-        /* Неоновые SaaS кнопки */
+        /* SaaS кнопки */
         .btn-more {
             background: linear-gradient(90deg, #4d12e6 0%, #7212e6 100%);
             color: #ffffff;
@@ -233,7 +234,6 @@
             transform: scale(1.02);
         }
 
-        /* Золотая кнопка для тарифа "Все включено" */
         .card.vip .btn-more {
             background: linear-gradient(90deg, #ff9f1c 0%, #ffb703 100%);
             box-shadow: 0 4px 12px rgba(255, 183, 3, 0.15);
@@ -254,30 +254,15 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Адаптивный перенос: 2х2 на планшетах, 1 столбец на мобильных */
-        @media (max-width: 1024px) {
-            .tariff-wrapper {
-                flex-wrap: wrap;
-                gap: 20px;
-            }
-            .card {
-                flex: 1 1 calc(50% - 10px);
-                min-width: 250px;
-            }
-        }
-
+        /* Корректировка шрифтов под маленькие экраны */
         @media (max-width: 600px) {
-            .tariff-wrapper {
-                flex-direction: column;
-            }
-            .card {
-                flex: 1 1 auto;
-                width: 100%;
-            }
             h1.page-title {
                 font-size: 2.3rem;
                 text-align: center;
                 margin-bottom: 35px;
+            }
+            body {
+                padding: 40px 16px;
             }
         }
     </style>
@@ -314,3 +299,10 @@
             </div>
             <ul class="features-list">
                 <li>2 месяца обучения</li>
+                <li>Разборы моих личных проектов</li>
+                <li>Различные способы по поиску первых клиентов</li>
+            </ul>
+            <div class="card-footer">
+                <div class="price-container">
+                    <span class="current-price">10 000 ₽</span>
+                </div>
