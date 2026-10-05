@@ -4,10 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Тарифы — Школа видеомонтажа и 3D-графики</title>
-<style>
-    /* ====== FONTS ====== */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+<!-- Шрифт грузится асинхронно: не блокирует отрисовку страницы -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"></noscript>
+
+<style>
     /* ====== RESET & BASE ====== */
     *, *::before, *::after {
         margin: 0;
@@ -28,10 +32,6 @@
         --text-dim-strong: rgba(235, 237, 245, 0.82);
     }
 
-    html {
-        scroll-behavior: smooth;
-    }
-
     body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         background-color: var(--bg);
@@ -42,7 +42,7 @@
         text-rendering: optimizeLegibility;
     }
 
-    /* ====== BACKGROUND: GRID + GLOW SPHERES ====== */
+    /* ====== ФОН: СЕТКА + СВЕЧЕНИЕ ====== */
     .bg-grid {
         position: fixed;
         inset: 0;
@@ -81,7 +81,7 @@
         right: -140px;
     }
 
-    /* ====== PAGE LAYOUT ====== */
+    /* ====== РАЗМЕТКА СТРАНИЦЫ ====== */
     .page {
         position: relative;
         z-index: 1;
@@ -92,7 +92,7 @@
         padding: 90px 24px 110px;
     }
 
-    /* ====== TITLE ====== */
+    /* ====== ЗАГОЛОВОК ====== */
     .page__eyebrow {
         display: inline-block;
         font-size: 12px;
@@ -113,12 +113,13 @@
         letter-spacing: -0.02em;
         line-height: 1.05;
         text-align: center;
+        /* запасной цвет, если градиентный текст не поддерживается */
+        color: #eef0f4;
         background: linear-gradient(180deg, #ffffff 0%, #a0a5b0 100%);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 16px;
-        text-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
     .page__subtitle {
@@ -130,7 +131,7 @@
         line-height: 1.6;
     }
 
-    /* ====== GRID: 2x2 on desktop, 1 column on mobile ====== */
+    /* ====== СЕТКА: 2x2 НА ДЕСКТОПЕ, 1 КОЛОНКА НА МОБИЛЬНЫХ ====== */
     .pricing {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 460px));
@@ -140,7 +141,7 @@
         max-width: 980px;
     }
 
-    /* ====== CARD (Glassmorphism) ====== */
+    /* ====== КАРТОЧКА ====== */
     .card {
         position: relative;
         display: flex;
@@ -156,9 +157,8 @@
         -webkit-backdrop-filter: blur(22px);
         backdrop-filter: blur(22px);
         overflow: hidden;
-        opacity: 0;
-        transform: translateY(40px);
-        animation: cardIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        /* карточка видна по умолчанию; анимация лишь «поднимает» её */
+        animation: cardIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
                     border-color 0.35s ease,
                     box-shadow 0.35s ease;
@@ -170,6 +170,10 @@
     .card:nth-child(4) { animation-delay: 0.40s; }
 
     @keyframes cardIn {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
         to {
             opacity: 1;
             transform: translateY(0);
@@ -233,7 +237,7 @@
         box-shadow: 0 12px 36px -8px rgba(255, 183, 3, 0.55);
     }
 
-    /* ====== CONTENT CARD ====== */
+    /* ====== НАПОЛНЕНИЕ КАРТОЧКИ ====== */
     .card__head {
         display: flex;
         align-items: flex-start;
@@ -273,6 +277,7 @@
         font-size: 44px;
         font-weight: 800;
         letter-spacing: -0.03em;
+        color: #eef0f4;
         background: linear-gradient(180deg, #ffffff, #a0a5b0);
         -webkit-background-clip: text;
         background-clip: text;
@@ -280,6 +285,7 @@
     }
 
     .card--vip .card__price-value {
+        color: var(--gold);
         background: linear-gradient(180deg, #ffe08a, #ffb703);
         -webkit-background-clip: text;
         background-clip: text;
@@ -300,7 +306,7 @@
         margin-bottom: 28px;
     }
 
-    /* ====== FEATURES ====== */
+    /* ====== СПИСОК ФУНКЦИЙ ====== */
     .card__features {
         list-style: none;
         display: flex;
@@ -317,17 +323,28 @@
         font-size: 15px;
         line-height: 1.55;
         color: var(--text-dim);
-        opacity: 0;
-        transform: translateY(10px);
-        animation: featureIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation: featureIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
-    .card:nth-child(1) .card__features li { animation-delay: 0.30s; }
-    .card:nth-child(2) .card__features li { animation-delay: 0.40s; }
-    .card:nth-child(3) .card__features li { animation-delay: 0.50s; }
-    .card:nth-child(4) .card__features li { animation-delay: 0.60s; }
+    .card:nth-child(1) .card__features li:nth-child(1) { animation-delay: 0.30s; }
+    .card:nth-child(1) .card__features li:nth-child(2) { animation-delay: 0.38s; }
+    .card:nth-child(1) .card__features li:nth-child(3) { animation-delay: 0.46s; }
+    .card:nth-child(1) .card__features li:nth-child(4) { animation-delay: 0.54s; }
+    .card:nth-child(2) .card__features li:nth-child(1) { animation-delay: 0.40s; }
+    .card:nth-child(2) .card__features li:nth-child(2) { animation-delay: 0.48s; }
+    .card:nth-child(2) .card__features li:nth-child(3) { animation-delay: 0.56s; }
+    .card:nth-child(3) .card__features li:nth-child(1) { animation-delay: 0.50s; }
+    .card:nth-child(3) .card__features li:nth-child(2) { animation-delay: 0.58s; }
+    .card:nth-child(3) .card__features li:nth-child(3) { animation-delay: 0.66s; }
+    .card:nth-child(4) .card__features li:nth-child(1) { animation-delay: 0.60s; }
+    .card:nth-child(4) .card__features li:nth-child(2) { animation-delay: 0.68s; }
+    .card:nth-child(4) .card__features li:nth-child(3) { animation-delay: 0.76s; }
 
     @keyframes featureIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
         to {
             opacity: 1;
             transform: translateY(0);
@@ -362,7 +379,7 @@
         box-shadow: 0 0 24px rgba(255, 183, 3, 0.7);
     }
 
-    /* ====== BUTTON ====== */
+    /* ====== КНОПКА ====== */
     .card__btn {
         display: block;
         width: 100%;
@@ -397,7 +414,7 @@
         outline-offset: 2px;
     }
 
-    /* ====== RESPONSIVE ====== */
+    /* ====== АДАПТИВ ====== */
     @media (max-width: 767px) {
         .page {
             padding: 64px 16px 80px;
@@ -420,5 +437,95 @@
     @media (prefers-reduced-motion: reduce) {
         .card, .card__features li {
             animation: none;
-            opacity: 1;
-            transform:
+        }
+    }
+</style>
+</head>
+<body>
+
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="glow glow--purple" aria-hidden="true"></div>
+    <div class="glow glow--teal" aria-hidden="true"></div>
+
+    <main class="page">
+        <span class="page__eyebrow">Обучение монтажу и 3D-графике</span>
+        <h1 class="page__title">ТАРИФЫ</h1>
+        <p class="page__subtitle">Выберите подходящий формат обучения — от базовых навыков до полного погружения в профессию.</p>
+
+        <div class="pricing">
+
+            <article class="card">
+                <div class="card__head">
+                    <h2 class="card__title">База АЕ</h2>
+                </div>
+                <div class="card__price">
+                    <span class="card__price-value">5 000</span>
+                    <span class="card__price-currency">₽</span>
+                </div>
+                <div class="card__divider"></div>
+                <ul class="card__features">
+                    <li><span class="check">✓</span><span>Обучение всем азам в AE</span></li>
+                    <li><span class="check">✓</span><span>Проекты, которые не попали в мой пак</span></li>
+                    <li><span class="check">✓</span><span>Сможете освоить базовые знания применения SFX\VFX</span></li>
+                    <li><span class="check">✓</span><span>Готовые уроки, по которым вы будете обучаться</span></li>
+                </ul>
+                <button class="card__btn" type="button">Подробнее</button>
+            </article>
+
+            <article class="card">
+                <div class="card__head">
+                    <h2 class="card__title">Моушен</h2>
+                </div>
+                <div class="card__price">
+                    <span class="card__price-value">10 000</span>
+                    <span class="card__price-currency">₽</span>
+                </div>
+                <div class="card__divider"></div>
+                <ul class="card__features">
+                    <li><span class="check">✓</span><span>2 месяца обучения</span></li>
+                    <li><span class="check">✓</span><span>Разборы моих личных проектов</span></li>
+                    <li><span class="check">✓</span><span>Различные способы по поиску первых клиентов</span></li>
+                </ul>
+                <button class="card__btn" type="button">Подробнее</button>
+            </article>
+
+            <article class="card">
+                <div class="card__head">
+                    <h2 class="card__title">3Д Графика</h2>
+                </div>
+                <div class="card__price">
+                    <span class="card__price-value">15 000</span>
+                    <span class="card__price-currency">₽</span>
+                </div>
+                <div class="card__divider"></div>
+                <ul class="card__features">
+                    <li><span class="check">✓</span><span>Обучение базе в Blender</span></li>
+                    <li><span class="check">✓</span><span>Готовые уроки по моделированию</span></li>
+                    <li><span class="check">✓</span><span>Применение в AE</span></li>
+                </ul>
+                <button class="card__btn" type="button">Подробнее</button>
+            </article>
+
+            <article class="card card--vip">
+                <div class="card__head">
+                    <h2 class="card__title">Все включено</h2>
+                    <span class="card__badge">VIP</span>
+                </div>
+                <div class="card__price">
+                    <span class="card__price-value">24 000</span>
+                    <span class="card__price-currency">₽</span>
+                </div>
+                <div class="card__divider"></div>
+                <ul class="card__features">
+                    <li><span class="check">✓</span><span>Получите все перечисленное выше</span></li>
+                    <li><span class="check">✓</span><span>Постоянная связь со мной</span></li>
+                    <li><span class="check">✓</span><span>Также помогу выйти на 1 клиента</span></li>
+                </ul>
+                <button class="card__btn" type="button">Подробнее</button>
+            </article>
+
+        </div>
+    </main>
+
+</body>
+</html>
