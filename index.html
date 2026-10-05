@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тарифы обучения</title>
     <style>
-        /* Базовые сбросы стилей */
+        /* CSS RESET & CORE STYLES */
         * {
             margin: 0;
             padding: 0;
@@ -13,12 +13,12 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* SaaS Глубокий темный фон с сеткой */
+        /* PREMIUM SAAS DARK BACKGROUND WITH GRID LINES */
         body {
             background-color: #08090d;
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
             background-size: 40px 40px;
             background-position: center top;
             color: #ffffff;
@@ -27,118 +27,145 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        /* BACKGROUND GLOW EFFECT SPHERES */
+        body::before, body::after {
+            content: "";
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            filter: blur(150px);
+            z-index: -1;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        body::before {
+            background: radial-gradient(circle, #4d12e6 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+        }
+
+        body::after {
+            background: radial-gradient(circle, #2ec4b6 0%, transparent 70%);
+            bottom: -100px;
+            right: -100px;
+        }
+
+        /* GRADIENT PAGE TITLE */
         h1.page-title {
-            font-size: 2.5rem;
+            font-size: 3rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
+            text-align: left;
             font-weight: 900;
             background: linear-gradient(135deg, #ffffff 40%, #8a8d98 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: fadeInDown 0.6s ease-out forwards;
         }
 
-        /* Скрываем стандартные радиокнопки */
-        input[type="radio"] {
-            display: none;
-        }
-
-        /* Единый контейнер для всех тарифов */
-        .accordion-container {
+        /* INDESTRUCTIBLE 2x2 GRID CONTAINER */
+        .tariff-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
             width: 100%;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        /* Единая плашка тарифа */
-        .accordion-item {
+        /* GLASSMORPHISM CARD PREMIUM STYLE */
+        .card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            overflow: hidden;
+            border-radius: 24px;
+            padding: 36px 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .accordion-item:hover {
-            border-color: rgba(114, 18, 230, 0.35);
-            box-shadow: 0 10px 30px rgba(114, 18, 230, 0.08);
-        }
-
-        /* Особый стиль для плашки "Все включено" */
-        .accordion-item.vip-item {
-            border-color: rgba(255, 183, 3, 0.15);
-        }
-        .accordion-item.vip-item:hover {
-            border-color: rgba(255, 183, 3, 0.45);
-            box-shadow: 0 10px 30px rgba(255, 183, 3, 0.08);
-        }
-
-        /* Кликабельный заголовок тарифа */
-        .accordion-trigger {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px 30px;
-            font-size: 1.3rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            user-select: none;
-            transition: color 0.3s ease;
-        }
-
-        .accordion-trigger .arrow {
-            font-size: 1.1rem;
-            color: #8a8d98;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .vip-item .accordion-trigger {
-            color: #ffb703;
-        }
-
-        /* Контентная зона (по умолчанию скрыта через CSS Grid анимацию) */
-        .accordion-content {
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .content-inner {
-            overflow: hidden;
-            padding: 0 30px;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        border-color 0.4s ease, 
+                        box-shadow 0.4s ease;
+            
+            /* INITIAL ANIMATION STATES */
             opacity: 0;
-            filter: blur(8px);
-            transform: translateY(-10px);
-            transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease, padding 0.4s ease;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
         }
 
-        /* Списки характеристик внутри */
-        .features-list {
-            list-style: none;
+        /* CASCADE ANIMATION DELAYS */
+        .card:nth-child(1) { animation-delay: 0.05s; }
+        .card:nth-child(2) { animation-delay: 0.15s; }
+        .card:nth-child(3) { animation-delay: 0.25s; }
+        .card:nth-child(4) { animation-delay: 0.35s; }
+
+        /* HOVER INTERACTION */
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(114, 18, 230, 0.4);
+            box-shadow: 0 15px 35px rgba(114, 18, 230, 0.15);
+        }
+
+        /* LUXURY ACCENTS FOR "ВСЕ ВКЛЮЧЕНО" VIP CARD */
+        .card.vip {
+            border: 1px solid rgba(255, 183, 3, 0.18);
+            background: linear-gradient(135deg, rgba(255, 183, 3, 0.02) 0%, rgba(255, 255, 255, 0.005) 100%);
+        }
+        
+        .card.vip:hover {
+            border-color: rgba(255, 183, 3, 0.45);
+            box-shadow: 0 15px 35px rgba(255, 183, 3, 0.12);
+        }
+
+        .card-header {
             margin-bottom: 24px;
         }
 
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.01em;
+            color: #f5f5f7;
+        }
+
+        .card.vip .card-title {
+            color: #ffb703;
+        }
+
+        /* FEATURES LISTS WITH CUSTOM NEON ICONS */
+        .features-list {
+            list-style: none;
+            margin-bottom: 36px;
+            flex-grow: 1;
+        }
+
         .features-list li {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #b0b3b8;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             display: flex;
             align-items: flex-start;
             gap: 12px;
             line-height: 1.45;
+            transition: color 0.3s ease;
         }
 
-        /* Круглые галочки со свечением */
+        .card:hover .features-list li {
+            color: #e2e4e9;
+        }
+
+        /* THE CUSTOM GREEN GLOWING CHECKMARK */
         .features-list li::before {
             content: "✓";
             display: flex;
@@ -153,37 +180,40 @@
             font-weight: bold;
             flex-shrink: 0;
             margin-top: 2px;
-            box-shadow: 0 0 10px rgba(46, 196, 182, 0.3);
+            box-shadow: 0 0 10px rgba(46, 196, 182, 0.4);
         }
 
-        .vip-item .features-list li::before {
+        /* VIP CARD CUSTOM GOLD POINTS */
+        .card.vip .features-list li::before {
             background-color: #ffb703;
-            box-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
+            box-shadow: 0 0 10px rgba(255, 183, 3, 0.4);
         }
 
-        /* Нижняя часть с ценой и кнопкой */
-        .panel-footer {
+        /* CARD BOTTOM FOOTER */
+        .card-footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 20px;
+            gap: 16px;
+            margin-top: auto;
             padding-top: 20px;
-            padding-bottom: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .panel-price {
+        .current-price {
             font-size: 1.6rem;
             font-weight: 800;
             white-space: nowrap;
+            letter-spacing: -0.02em;
+            color: #ffffff;
         }
 
-        /* SaaS кнопки с градиентом */
-        .btn-action {
+        /* SAAS PURPLE BUTTONS */
+        .btn-more {
             background: linear-gradient(90deg, #4d12e6 0%, #7212e6 100%);
             color: #ffffff;
             text-decoration: none;
-            padding: 12px 28px;
+            padding: 14px 24px;
             border-radius: 12px;
             font-size: 0.85rem;
             font-weight: 700;
@@ -191,53 +221,53 @@
             letter-spacing: 0.05em;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             box-shadow: 0 4px 15px rgba(114, 18, 230, 0.25);
+            text-align: center;
+            flex-grow: 1;
+            white-space: nowrap;
         }
 
-        .btn-action:hover {
-            box-shadow: 0 6px 22px rgba(114, 18, 230, 0.5);
-            transform: translateY(-2px);
+        .btn-more:hover {
+            box-shadow: 0 6px 22px rgba(114, 18, 230, 0.55);
+            transform: scale(1.02);
         }
 
-        .vip-item .btn-action {
+        /* VIP CARD BRIGHT GOLD BUTTON */
+        .card.vip .btn-more {
             background: linear-gradient(90deg, #ff9f1c 0%, #ffb703 100%);
-            color: #08090d;
             box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2);
+            color: #08090d;
         }
         
-        .vip-item .btn-action:hover {
-            box-shadow: 0 6px 22px rgba(255, 183, 3, 0.45);
+        .card.vip .btn-more:hover {
+            box-shadow: 0 6px 22px rgba(255, 183, 3, 0.5);
         }
 
-        /* МАКЕТ НА ЧИСТОМ CSS: Логика раскрытия активного тарифа */
-        #accordion-tab1:checked ~ .accordion-container .item-1 .accordion-content,
-        #accordion-tab2:checked ~ .accordion-container .item-2 .accordion-content,
-        #accordion-tab3:checked ~ .accordion-container .item-3 .accordion-content,
-        #accordion-tab4:checked ~ .accordion-container .item-4 .accordion-content {
-            grid-template-rows: 1fr;
+        /* KEYFRAME SAAS ANIMATIONS */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0px); }
         }
 
-        #accordion-tab1:checked ~ .accordion-container .item-1 .content-inner,
-        #accordion-tab2:checked ~ .accordion-container .item-2 .content-inner,
-        #accordion-tab3:checked ~ .accordion-container .item-3 .content-inner,
-        #accordion-tab4:checked ~ .accordion-container .item-4 .content-inner {
-            opacity: 1;
-            filter: blur(0px);
-            transform: translateY(0);
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Поворот стрелочки у активного тарифа */
-        #accordion-tab1:checked ~ .accordion-container .item-1 .accordion-trigger .arrow,
-        #accordion-tab2:checked ~ .accordion-container .item-2 .accordion-trigger .arrow,
-        #accordion-tab3:checked ~ .accordion-container .item-3 .accordion-trigger .arrow,
-        #accordion-tab4:checked ~ .accordion-container .item-4 .accordion-trigger .arrow {
-            transform: rotate(90deg);
-            color: #ffffff;
-        }
-        
-        #accordion-tab4:checked ~ .accordion-container .item-4 .accordion-trigger .arrow {
-            color: #ffb703;
+        /* MOBILE RESPONSIVE MEDIA BREAKPOINT */
+        @media (max-width: 768px) {
+            .tariff-grid {
+                grid-template-columns: 1fr; /* Switches directly to 1 vertical column */
+                max-width: 450px;
+            }
+            h1.page-title {
+                font-size: 2.3rem;
+                text-align: center;
+                margin-bottom: 35px;
+            }
+            body {
+                padding: 40px 16px;
+            }
         }
     </style>
 </head>
@@ -245,45 +275,42 @@
 
     <h1 class="page-title">Тарифы</h1>
 
-    <!-- Переключатели кликов -->
-    <input type="radio" id="accordion-tab1" name="accordion-select" checked>
-    <input type="radio" id="accordion-tab2" name="accordion-select">
-    <input type="radio" id="accordion-tab3" name="accordion-select">
-    <input type="radio" id="accordion-tab4" name="accordion-select">
+    <main class="tariff-grid">
 
-    <!-- Главная SaaS композиция -->
-    <main class="accordion-container">
-
-        <!-- Тариф 1: БАЗА АЕ -->
-        <div class="accordion-item item-1">
-            <label for="accordion-tab1" class="accordion-trigger">
-                <span>База AE</span>
-                <span class="arrow">→</span>
-            </label>
-            <div class="accordion-content">
-                <div class="content-inner">
-                    <ul class="features-list">
-                        <li>Обучение всем азам в AE</li>
-                        <li>Проекты, которые не попали в мой пак</li>
-                        <li>Сможете освоить базовые знания применения SFX\VFX</li>
-                        <li>Готовые уроки, по которым вы будете обучаться</li>
-                    </ul>
-                    <div class="panel-footer">
-                        <span class="panel-price">5 000 ₽</span>
-                        <a href="#" class="btn-action">Подробнее</a>
-                    </div>
+        <!-- CARD 1: БАЗА АЕ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">База АЕ</div>
+            </div>
+            <ul class="features-list">
+                <li>Обучение всем азам в AE</li>
+                <li>Проекты, которые не попали в мой пак</li>
+                <li>Сможете освоить базовые знания применения SFX\VFX</li>
+                <li>Готовые уроки, по которым вы будете обучаться</li>
+            </ul>
+            <div class="card-footer">
+                <div class="price-container">
+                    <span class="current-price">5 000 ₽</span>
                 </div>
+                <a href="#" class="btn-more">Подробнее</a>
             </div>
         </div>
 
-        <!-- Тариф 2: МОУШЕН -->
-        <div class="accordion-item item-2">
-            <label for="accordion-tab2" class="accordion-trigger">
-                <span>Моушен</span>
-                <span class="arrow">→</span>
-            </label>
-            <div class="accordion-content">
-                <div class="content-inner">
-                    <ul class="features-list">
-                        <li>2 месяца обучения</li>
-                        <li>Разборы моих личных проектов</li>
+        <!-- CARD 2: МОУШЕН -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Моушен</div>
+            </div>
+            <ul class="features-list">
+                <li>2 месяца обучения</li>
+                <li>Разборы моих личных проектов</li>
+                <li>Различные способы по поиску первых клиентов</li>
+            </ul>
+            <div class="card-footer">
+                <div class="price-container">
+                    <span class="current-price">10 000 ₽</span>
+                </div>
+                <a href="#" class="btn-more">Подробнее</a>
+            </div>
+        </div>
+
