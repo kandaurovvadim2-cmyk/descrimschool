@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тарифы обучения</title>
     <style>
-        /* Общие стили и сбросы в темных тонах */
+        /* Базовые сбросы */
         * {
             margin: 0;
             padding: 0;
@@ -13,70 +13,122 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
+        /* SaaS Глубокий фон с сеткой и градиентными сферами */
         body {
-            background-color: #0b0c10;
+            background-color: #08090d;
+            /* Эффект сетки (Grid Lines) */
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center top;
             color: #ffffff;
-            padding: 60px 20px;
+            padding: 80px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        /* Размытые неоновые сферы на фоне */
+        body::before, body::after {
+            content: "";
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(140px);
+            z-index: -1;
+            opacity: 0.35;
+            pointer-events: none;
+            animation: pulseGlow 8s infinite alternate ease-in-out;
+        }
+
+        body::before {
+            background: radial-gradient(circle, #4d12e6 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+        }
+
+        body::after {
+            background: radial-gradient(circle, #2ec4b6 0%, transparent 70%);
+            bottom: 100px;
+            right: -100px;
+            animation-delay: 4s;
+        }
+
+        /* Плавная анимация свечения фона */
+        @keyframes pulseGlow {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.25; }
+            100% { transform: scale(1.2) translate(30px, 20px); opacity: 0.45; }
+        }
+
+        /* Заголовок в стиле современных лендингов */
         h1.page-title {
-            font-size: 2.8rem;
+            font-size: 3rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 50px;
+            margin-bottom: 60px;
             width: 100%;
             max-width: 1200px;
             text-align: left;
-            font-weight: 800;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 30%, #a5aab4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInDown 0.8s ease-out forwards;
         }
 
-        /* Адаптивная сетка под 4 тарифа */
+        /* Сетка только для ОДНОГО ряда из 4-х карточек */
         .tariff-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 24px;
             max-width: 1200px;
             width: 100%;
+            animation: fadeInUp 1s ease-out-back forwards;
         }
 
-        /* Стиль стеклянной карточки (Glassmorphism) */
+        /* Премиальная стеклянная карточка */
         .card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 22px;
-            padding: 32px 24px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 36px 26px;
             display: flex;
             flex-direction: column;
             position: relative;
-            backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        border-color 0.4s ease, 
+                        box-shadow 0.4s ease;
         }
 
-        /* Эффект при наведении на карточку */
+        /* Плавный подъем и неоновое отражение при наведении */
         .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform: translateY(-8px) scale(1.01);
+            border-color: rgba(114, 18, 230, 0.35);
+            box-shadow: 0 20px 40px rgba(114, 18, 230, 0.12), 
+                        0 0 1px rgba(114, 18, 230, 0.2);
         }
 
-        /* Для тарифа "Все включено" сделаем легкое золотое свечение границ */
+        /* Выделение тарифа "Все включено" */
         .card.vip {
-            border: 1px solid rgba(255, 183, 3, 0.2);
-            background: linear-gradient(135deg, rgba(255, 183, 3, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 183, 3, 0.15);
+            background: linear-gradient(135deg, rgba(255, 183, 3, 0.02) 0%, rgba(255, 255, 255, 0.005) 100%);
         }
+        
         .card.vip:hover {
             border-color: rgba(255, 183, 3, 0.4);
+            box-shadow: 0 20px 40px rgba(255, 183, 3, 0.1),
+                        0 0 1px rgba(255, 183, 3, 0.2);
         }
 
         .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
         .card-title {
@@ -84,25 +136,33 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: -0.01em;
+            color: #f5f5f7;
         }
 
-        /* Зеленые неоновые галочки */
+        /* Кастомный список фич */
         .features-list {
             list-style: none;
-            margin-bottom: 32px;
+            margin-bottom: 36px;
             flex-grow: 1;
         }
 
         .features-list li {
             font-size: 0.95rem;
-            color: #e2e4e9;
-            margin-bottom: 16px;
+            color: #b0b3b8;
+            margin-bottom: 18px;
             display: flex;
             align-items: flex-start;
             gap: 12px;
-            line-height: 1.4;
+            line-height: 1.45;
+            transition: color 0.3s ease;
         }
 
+        /* Подсветка текста строчки при наведении на саму карточку */
+        .card:hover .features-list li {
+            color: #e2e4e9;
+        }
+
+        /* Точки-галочки с красивым свечением */
         .features-list li::before {
             content: "✓";
             display: flex;
@@ -111,77 +171,91 @@
             width: 18px;
             height: 18px;
             background-color: #2ec4b6;
-            color: #0d0e12;
+            color: #08090d;
             border-radius: 50%;
             font-size: 0.7rem;
             font-weight: bold;
             flex-shrink: 0;
             margin-top: 2px;
-            box-shadow: 0 0 8px rgba(46, 196, 182, 0.4);
+            box-shadow: 0 0 10px rgba(46, 196, 182, 0.4);
         }
 
-        /* Нижняя часть: цена и кнопка */
+        /* Меняем цвет галочек для VIP тарифа */
+        .card.vip .features-list li::before {
+            background-color: #ffb703;
+            box-shadow: 0 0 10px rgba(255, 183, 3, 0.4);
+        }
+
+        /* Футер карточки */
         .card-footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 14px;
+            gap: 16px;
             margin-top: auto;
-            padding-top: 10px;
-        }
-
-        .price-container {
-            display: flex;
-            flex-direction: column;
         }
 
         .current-price {
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 800;
             white-space: nowrap;
             letter-spacing: -0.02em;
+            color: #ffffff;
         }
 
-        /* Кнопка с фиолетовым неоновым градиентом */
+        /* Стильная SaaS кнопка */
         .btn-more {
             background: linear-gradient(90deg, #4d12e6 0%, #7212e6 100%);
             color: #ffffff;
             text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 12px;
+            padding: 14px 22px;
+            border-radius: 14px;
             font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
             border: none;
             cursor: pointer;
-            transition: box-shadow 0.3s ease, transform 0.2s ease, opacity 0.2s ease;
-            box-shadow: 0 4px 15px rgba(114, 18, 230, 0.3);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 4px 15px rgba(114, 18, 230, 0.25);
             text-align: center;
             flex-grow: 1;
         }
 
         .btn-more:hover {
-            box-shadow: 0 6px 20px rgba(114, 18, 230, 0.6);
-            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(114, 18, 230, 0.55), 
+                        0 0 0 2px rgba(255, 255, 255, 0.1);
+            transform: scale(1.03);
         }
 
         .btn-more:active {
-            transform: translateY(0);
+            transform: scale(0.98);
         }
 
-        /* Золотая кнопка для тарифа "Все включено" */
+        /* Золотая кнопка для "Все включено" */
         .card.vip .btn-more {
             background: linear-gradient(90deg, #ff9f1c 0%, #ffb703 100%);
-            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.25);
-            color: #000000;
+            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2);
+            color: #08090d;
         }
         .card.vip .btn-more:hover {
-            box-shadow: 0 6px 20px rgba(255, 183, 3, 0.5);
+            box-shadow: 0 6px 25px rgba(255, 183, 3, 0.5),
+                        0 0 0 2px rgba(255, 255, 255, 0.15);
         }
 
-        /* Адаптивность под разные экраны */
-        @media (max-width: 1100px) {
+        /* Эффекты плавного появления при загрузке страницы */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Адаптивная структура под экраны планшетов и смартфонов */
+        @media (max-width: 1150px) {
             .tariff-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -192,12 +266,15 @@
                 grid-template-columns: 1fr;
             }
             h1.page-title {
-                font-size: 2.2rem;
+                font-size: 2.3rem;
                 text-align: center;
-                margin-bottom: 30px;
+                margin-bottom: 40px;
             }
             body {
-                padding: 40px 16px;
+                padding: 50px 16px;
+            }
+            .card {
+                padding: 30px 20px;
             }
         }
     </style>
@@ -234,341 +311,3 @@
             </div>
             <ul class="features-list">
                 <li>2 месяца обучения</li>
-                <li>Разборы моих личных проектов</li>
-                <li>Различные способы по поиску первых клиентов</li>
-            </ul>
-            <div class="card-footer">
-                <div class="price-container">
-                    <span class="current-price">10 000 ₽</span>
-                </div>
-                <a href="#" class="btn-more">Подробнее</a>
-            </div>
-        </div>
-
-        <!-- Тариф 3: 3Д ГРАФИКА -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">3Д Графика</div>
-            </div>
-            <ul class="features-list">
-                <li>Обучение базе в Blender</li>
-                <li>Готовые уроки по моделированию</li>
-                <li>Применение в AE</li>
-            </ul>
-            <div class="card-footer">
-                <div class="price-container">
-                    <span class="current-price">15 000 ₽</span>
-                </div>
-                <a href="#" class="btn-more">Подробнее</a>
-            </div>
-        </div>
-
-        <!-- Тариф 4: ВСЕ ВКЛЮЧЕНО -->
-        <div class="card vip">
-            <div class="card-header">
-                <div class="card-title" style="color: #ffb703;">Все включено</div>
-            </div>
-            <ul class="features-list">
-                <li>Получите все перечисленное выше</li>
-                <li>Постоянная связь со мной</li>
-                <li>Также помогу выйти на 1 клиента</li>
-            </ul>
-            <div class="card-footer">
-                <div class="price-container">
-                    <span class="current-price" style="color: #ffb703;">24 000 ₽</span>
-                </div>
-                <a href="#" class="btn-more">Подробнее</a>
-            </div>
-        </div>
-
-    </main>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тарифы обучения</title>
-    <style>
-        /* Общие стили и сбросы в темных тонах */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background-color: #0b0c10;
-            color: #ffffff;
-            padding: 60px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        h1.page-title {
-            font-size: 2.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 50px;
-            width: 100%;
-            max-width: 1200px;
-            text-align: left;
-            font-weight: 800;
-        }
-
-        /* Адаптивная сетка под 4 тарифа */
-        .tariff-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        /* Стиль стеклянной карточки (Glassmorphism) */
-        .card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 22px;
-            padding: 32px 24px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* Эффект при наведении на карточку */
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Для тарифа "Все включено" сделаем легкое золотое свечение границ */
-        .card.vip {
-            border: 1px solid rgba(255, 183, 3, 0.2);
-            background: linear-gradient(135deg, rgba(255, 183, 3, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-        }
-        .card.vip:hover {
-            border-color: rgba(255, 183, 3, 0.4);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: -0.01em;
-        }
-
-        /* Зеленые неоновые галочки */
-        .features-list {
-            list-style: none;
-            margin-bottom: 32px;
-            flex-grow: 1;
-        }
-
-        .features-list li {
-            font-size: 0.95rem;
-            color: #e2e4e9;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            line-height: 1.4;
-        }
-
-        .features-list li::before {
-            content: "✓";
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 18px;
-            height: 18px;
-            background-color: #2ec4b6;
-            color: #0d0e12;
-            border-radius: 50%;
-            font-size: 0.7rem;
-            font-weight: bold;
-            flex-shrink: 0;
-            margin-top: 2px;
-            box-shadow: 0 0 8px rgba(46, 196, 182, 0.4);
-        }
-
-        /* Нижняя часть: цена и кнопка */
-        .card-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
-            margin-top: auto;
-            padding-top: 10px;
-        }
-
-        .price-container {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .current-price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            white-space: nowrap;
-            letter-spacing: -0.02em;
-        }
-
-        /* Кнопка с фиолетовым неоновым градиентом */
-        .btn-more {
-            background: linear-gradient(90deg, #4d12e6 0%, #7212e6 100%);
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border: none;
-            cursor: pointer;
-            transition: box-shadow 0.3s ease, transform 0.2s ease, opacity 0.2s ease;
-            box-shadow: 0 4px 15px rgba(114, 18, 230, 0.3);
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .btn-more:hover {
-            box-shadow: 0 6px 20px rgba(114, 18, 230, 0.6);
-            transform: translateY(-2px);
-        }
-
-        .btn-more:active {
-            transform: translateY(0);
-        }
-
-        /* Золотая кнопка для тарифа "Все включено" */
-        .card.vip .btn-more {
-            background: linear-gradient(90deg, #ff9f1c 0%, #ffb703 100%);
-            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.25);
-            color: #000000;
-        }
-        .card.vip .btn-more:hover {
-            box-shadow: 0 6px 20px rgba(255, 183, 3, 0.5);
-        }
-
-        /* Адаптивность под разные экраны */
-        @media (max-width: 1100px) {
-            .tariff-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 650px) {
-            .tariff-grid {
-                grid-template-columns: 1fr;
-            }
-            h1.page-title {
-                font-size: 2.2rem;
-                text-align: center;
-                margin-bottom: 30px;
-            }
-            body {
-                padding: 40px 16px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <h1 class="page-title">Тарифы</h1>
-
-    <main class="tariff-grid">
-
-        <!-- Тариф 1: БАЗА АЕ -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">База АЕ</div>
-            </div>
-            <ul class="features-list">
-                <li>Обучение всем азам в AE</li>
-                <li>Проекты, которые не попали в мой пак</li>
-                <li>Сможете освоить базовые знания применения SFX\VFX</li>
-                <li>Готовые уроки, по которым вы будете обучаться</li>
-            </ul>
-            <div class="card-footer">
-                <div class="price-container">
-                    <span class="current-price">5 000 ₽</span>
-                </div>
-                <a href="#" class="btn-more">Подробнее</a>
-            </div>
-        </div>
-
-        <!-- Тариф 2: МОУШЕН -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Моушен</div>
-            </div>
-            <ul class="features-list">
-                <li>2 месяца обучения</li>
-                <li>Разборы моих личных проектов</li>
-                <li>Различные способы по поиску первых клиентов</li>
-            </ul>
-            <div class="card-footer">
-                <div class="price-container">
-                    <span class="current-price">10 000 ₽</span>
-                </div>
-                <a href="#" class="btn-more">Подробнее</a>
-            </div>
-        </div>
-
-        <!-- Тариф 3: 3Д ГРАФИКА -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">3Д Графика</div>
-            </div>
-            <ul class="features-list">
-                <li>Обучение базе в Blender</li>
-                <li>Готовые уроки по моделированию</li>
-                <li>Применение в AE</li>
-            </ul>
-            <div class="card-footer">
-                <div class="price-container">
-                    <span class="current-price">15 000 ₽</span>
-                </div>
-                <a href="#" class="btn-more">Подробнее</a>
-            </div>
-        </div>
-
-        <!-- Тариф 4: ВСЕ ВКЛЮЧЕНО -->
-        <div class="card vip">
-            <div class="card-header">
-                <div class="card-title" style="color: #ffb703;">Все включено</div>
-            </div>
-            <ul class="features-list">
-                <li>Получите все перечисленное выше</li>
-                <li>Постоянная связь со мной</li>
-                <li>Также помогу выйти на 1 клиента</li>
-            </ul>
-            <div class="card-footer">
-                <div class="price-container">
-                    <span class="current-price" style="color: #ffb703;">24 000 ₽</span>
-                </div>
-                <a href="#" class="btn-more">Подробнее</a>
-            </div>
-        </div>
-
-    </main>
-
-</body>
-</html>
