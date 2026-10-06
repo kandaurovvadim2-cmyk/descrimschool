@@ -7,293 +7,488 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"></noscript>
 
 <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
     :root {
-        --bg: #05060a;
-        --card-bg: rgba(255, 255, 255, 0.03);
+        /* Палитра: чуть светлее фон, мягче акценты — глазу комфортнее */
+        --bg: #0b0d13;
+        --bg-elevated: rgba(255, 255, 255, 0.045);
         --card-border: rgba(255, 255, 255, 0.08);
-        --accent-purple: #4d12e6;
-        --accent-teal: #2ec4b6;
-        --check-green: #2ecc71;
-        --gold: #ffb703;
-        --gold-border: rgba(255, 183, 3, 0.25);
-        --text-main: #ffffff;
-        --text-dim: rgba(255, 255, 255, 0.6);
-        --text-dim-strong: rgba(255, 255, 255, 0.85);
-        --glow-purple: rgba(77, 18, 230, 0.35);
-        --glow-teal: rgba(46, 196, 182, 0.35);
+        --accent-purple: #8b5cf6;
+        --accent-teal: #3fc9b7;
+        --check-green: #43d17c;
+        --gold: #ffc233;
+        --gold-soft: rgba(255, 194, 51, 0.22);
+
+        /* Текст: приглушённые тона подняты — читается легче на тёмном фоне */
+        --text-main: #f3f5f9;
+        --text-dim: #b9bfd0;
+        --text-dim-strong: #dfe3ee;
+
+        --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        --radius-card: 24px;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         background-color: var(--bg);
         color: var(--text-main);
         min-height: 100vh;
         overflow-x: hidden;
-        position: relative;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
     }
 
-    /* Фоновые эффекты */
+    .ripple-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background-color: var(--bg);
+        pointer-events: none;
+    }
+
+    /* Сетка стала чуть деликатнее и растворяется мягче */
     .bg-grid {
-        position: fixed; inset: 0; z-index: 1; pointer-events: none;
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
         background-image:
-            linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-        background-size: 40px 40px;
-        mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, #000 40%, transparent 100%);
+            linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+        background-size: 44px 44px;
+        -webkit-mask-image: radial-gradient(ellipse 95% 85% at 50% 38%, #000 30%, transparent 100%);
+        mask-image: radial-gradient(ellipse 95% 85% at 50% 38%, #000 30%, transparent 100%);
     }
 
+    /* Свечение: меньше резкости, больше мягкости + медленный дрейф */
     .glow {
-        position: absolute; border-radius: 50%; filter: blur(100px);
-        opacity: 0.4; z-index: 1; pointer-events: none;
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        z-index: 1;
+        pointer-events: none;
+        will-change: transform;
     }
 
-    .glow--purple { width: 600px; height: 600px; background: var(--glow-purple); top: -200px; left: -180px; animation: float 10s ease-in-out infinite; }
-    .glow--teal { width: 550px; height: 550px; background: var(--glow-teal); bottom: -200px; right: -160px; animation: float 12s ease-in-out infinite reverse; }
-
-    @keyframes float {
-        0%, 100% { transform: translate(0, 0); }
-        50% { transform: translate(20px, 30px); }
+    .glow--purple {
+        width: 540px; height: 540px;
+        background: radial-gradient(circle at 35% 35%, rgba(139, 92, 246, 0.35), transparent 70%);
+        top: -160px; left: -140px;
+        animation: drift-a 22s ease-in-out infinite alternate;
     }
 
-    /* Ripple эффект */
-    .ripple-layer { position: fixed; inset: 0; z-index: 0; background: var(--bg); pointer-events: none; }
-    .ripple {
-        position: absolute; border-radius: 50%; background: rgba(255,255,255,0.15);
-        transform: scale(0); opacity: 0.8; pointer-events: none;
-        animation: ripple-anim 0.6s linear forwards;
+    .glow--teal {
+        width: 500px; height: 500px;
+        background: radial-gradient(circle at 60% 60%, rgba(63, 201, 183, 0.26), transparent 70%);
+        bottom: -160px; right: -120px;
+        animation: drift-b 26s ease-in-out infinite alternate;
     }
-    @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+    @keyframes drift-a {
+        from { transform: translate(0, 0) scale(1); }
+        to   { transform: translate(50px, 30px) scale(1.08); }
+    }
+    @keyframes drift-b {
+        from { transform: translate(0, 0) scale(1.05); }
+        to   { transform: translate(-40px, -30px) scale(1); }
+    }
 
     .page {
-        position: relative; z-index: 10; min-height: 100vh;
-        display: flex; flex-direction: column; align-items: center;
-        padding: 100px 20px;
+        position: relative;
+        z-index: 10;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 96px 24px 110px;
     }
 
     .page__eyebrow {
-        display: inline-block; font-size: 11px; font-weight: 700;
-        letter-spacing: 0.25em; text-transform: uppercase;
-        color: var(--text-dim); margin-bottom: 20px;
-        padding: 10px 20px; border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 50px; background: rgba(255,255,255,0.03);
-        backdrop-filter: blur(8px);
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--text-dim-strong);
+        margin-bottom: 20px;
+        padding: 8px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 100px;
+        background: var(--bg-elevated);
+        animation: fadeUp 0.8s var(--ease-out) backwards;
     }
 
     .page__title {
-        font-size: clamp(52px, 10vw, 90px); font-weight: 800;
-        letter-spacing: -0.03em; line-height: 1.05; text-align: center;
-        background: linear-gradient(135deg, #fff, #a0a5b0);
-        -webkit-background-clip: text; background-clip: text;
+        font-size: clamp(46px, 8vw, 80px);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.06;
+        text-align: center;
+        color: #eef1f6;
+        background: linear-gradient(180deg, #ffffff 0%, #b7bcc9 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 20px;
-        position: relative;
-        animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        margin-bottom: 18px;
+        animation: fadeUp 0.8s var(--ease-out) 0.1s backwards;
     }
 
     .page__subtitle {
-        font-size: 16px; color: var(--text-dim); text-align: center;
-        max-width: 600px; margin-bottom: 60px; line-height: 1.6;
-        opacity: 0; transform: translateY(20px);
-        animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards;
+        font-size: 17px;
+        line-height: 1.65;
+        color: var(--text-dim);
+        text-align: center;
+        max-width: 540px;
+        margin-bottom: 60px;
+        animation: fadeUp 0.8s var(--ease-out) 0.2s backwards;
     }
 
     .pricing {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 36px; justify-content: center; width: 100%; max-width: 1200px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 460px));
+        gap: 30px;
+        justify-content: center;
+        width: 100%;
+        max-width: 980px;
     }
 
+    /* Каждая карточка получает свою задержку через --stagger —
+       и сам карточки, и пункты внутри считаются от неё */
     .card {
-        position: relative; display: flex; flex-direction: column;
-        padding: 48px 40px; border-radius: 28px;
-        background: var(--card-bg); border: 1px solid var(--card-border);
-        backdrop-filter: blur(16px); overflow: hidden;
-        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-                    box-shadow 0.4s ease, border-color 0.4s ease;
-        opacity: 0; transform: translateY(40px);
-        animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        --stagger: 0s;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 44px 38px 40px;
+        border-radius: var(--radius-card);
+        background:
+            linear-gradient(165deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.018) 50%, rgba(255, 255, 255, 0.006) 100%);
+        border: 1px solid var(--card-border);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+        overflow: hidden;
+        animation: cardIn 0.9s var(--ease-out) var(--stagger) backwards;
+        transition:
+            transform 0.4s var(--ease-out),
+            border-color 0.4s ease,
+            box-shadow 0.4s ease;
     }
 
-    .card:nth-child(1) { animation-delay: 0.1s; }
-    .card:nth-child(2) { animation-delay: 0.2s; }
-    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(1) { --stagger: 0.15s; }
+    .card:nth-child(2) { --stagger: 0.25s; }
+    .card:nth-child(3) { --stagger: 0.35s; }
+    .card:nth-child(4) { --stagger: 0.45s; }
+
+    @keyframes cardIn {
+        from { opacity: 0; transform: translateY(36px) scale(0.98); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Появление пунктов: каскад от задержки карточки, без десятков селекторов */
+    .card__features li {
+        animation: fadeUp 0.55s var(--ease-out) calc(var(--stagger) + 0.35s) backwards;
+    }
+    .card__features li:nth-child(2) { animation-delay: calc(var(--stagger) + 0.45s); }
+    .card__features li:nth-child(3) { animation-delay: calc(var(--stagger) + 0.55s); }
+    .card__features li:nth-child(4) { animation-delay: calc(var(--stagger) + 0.65s); }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
 
     .card:hover {
-        transform: translateY(-14px);
-        border-color: rgba(255, 255, 255, 0.18);
-        box-shadow: 0 28px 60px -16px rgba(0, 0, 0, 0.6),
-                    0 0 0 1px rgba(255, 255, 255, 0.08);
+        transform: translateY(-8px);
+        border-color: rgba(255, 255, 255, 0.16);
+        box-shadow: 0 24px 56px -22px rgba(139, 92, 246, 0.35), 0 10px 30px -14px rgba(0, 0, 0, 0.5);
     }
 
+    .card--vip:hover {
+        box-shadow: 0 24px 56px -20px rgba(255, 194, 51, 0.28), 0 10px 30px -14px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Тонкий блик сверху */
     .card::before {
-        content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        content: "";
+        position: absolute;
+        top: 0; left: 12%; right: 12%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
     }
 
     .card--vip {
-        border-color: var(--gold-border);
-        background: rgba(255, 183, 3, 0.04);
-        box-shadow: 0 0 0 1px rgba(255, 183, 3, 0.1);
+        border-color: var(--gold-soft);
+        background:
+            linear-gradient(165deg, rgba(255, 194, 51, 0.09) 0%, rgba(255, 255, 255, 0.025) 50%, rgba(255, 255, 255, 0.006) 100%);
     }
 
-    .card--vip::before { background: linear-gradient(90deg, transparent, rgba(255,183,3,0.6), transparent); }
+    .card--vip::before { background: linear-gradient(90deg, transparent, rgba(255, 194, 51, 0.55), transparent); }
     .card--vip .card__title { color: var(--gold); }
-    .card--vip .check { color: var(--gold); box-shadow: 0 0 20px rgba(255,183,3,0.7); }
-    .card--vip .card__btn { background: linear-gradient(135deg, #ffb703, #ff9505); color: #1a1206; }
-    .card--vip .card__buy-btn { border-color: rgba(255, 183, 3, 0.4); color: var(--gold); background: rgba(255, 183, 3, 0.08); }
+    .card--vip .check { color: var(--gold); box-shadow: 0 0 14px rgba(255, 194, 51, 0.5); }
+    .card--vip .card__btn { background: linear-gradient(135deg, #ffcf5e 0%, #ff9f1a 100%); color: #221703; box-shadow: 0 10px 28px -10px rgba(255, 194, 51, 0.5); }
+    .card--vip .card__btn:hover { box-shadow: 0 14px 36px -10px rgba(255, 194, 51, 0.55); }
 
-    .card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
-    .card__title { font-size: 24px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
+    .card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+
+    .card__title { font-size: 21px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+
     .card__badge {
-        flex-shrink: 0; font-size: 10px; font-weight: 700;
-        letter-spacing: 0.1em; text-transform: uppercase;
-        color: #000; background: linear-gradient(135deg, #ffd768, #ffb703);
-        padding: 6px 12px; border-radius: 100px; margin-top: 4px;
+        flex-shrink: 0;
+        font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+        color: #221703;
+        background: linear-gradient(135deg, #ffd97a, #ffb703);
+        padding: 6px 12px; border-radius: 100px; margin-top: 2px;
+        position: relative;
+        overflow: hidden;
     }
 
-    .card__price { display: flex; align-items: baseline; gap: 10px; margin: 16px 0 24px; }
-    .card__price-value {
-        font-size: 48px; font-weight: 800; letter-spacing: -0.04em;
-        color: #fff; background: linear-gradient(180deg, #fff, #a0a5b0);
-        -webkit-background-clip: text; background-clip: text;
-        -webkit-text-fill-color: transparent;
+    /* Лёгкий пробегающий блик на VIP-бейдже */
+    .card__badge::after {
+        content: "";
+        position: absolute;
+        top: 0; left: -80%;
+        width: 60%; height: 100%;
+        background: linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+        transform: skewX(-20deg);
+        animation: shimmer 3.2s ease-in-out 1.4s infinite;
     }
-    .card--vip .card__price-value { color: var(--gold); background: linear-gradient(180deg, #fff, var(--gold)); }
-    .card__price-currency { font-size: 20px; font-weight: 700; color: var(--text-dim-strong); }
+
+    @keyframes shimmer {
+        0%, 55% { left: -80%; }
+        85%, 100% { left: 130%; }
+    }
+
+    .card__price { display: flex; align-items: baseline; gap: 8px; margin: 16px 0 28px; }
+
+    .card__price-value {
+        font-size: 44px; font-weight: 800; letter-spacing: -0.03em;
+        color: #eef1f6;
+        background: linear-gradient(180deg, #ffffff, #b7bcc9);
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .card--vip .card__price-value {
+        background: linear-gradient(180deg, #ffe29a, #ffb703);
+        -webkit-background-clip: text; background-clip: text;
+    }
+
+    .card__price-currency { font-size: 22px; font-weight: 700; color: var(--text-dim-strong); }
 
     .card__divider {
-        height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
         margin-bottom: 28px;
     }
 
-    .card__features { list-style: none; display: flex; flex-direction: column; gap: 16px; flex-grow: 1; margin-bottom: 32px; }
+    .card__features {
+        list-style: none;
+        display: flex; flex-direction: column;
+        gap: 18px;
+        flex-grow: 1;
+        margin-bottom: 34px;
+    }
+
     .card__features li {
         display: flex; align-items: flex-start; gap: 14px;
-        font-size: 15px; line-height: 1.5; color: var(--text-dim);
-        opacity: 0; transform: translateY(10px);
-        animation: fadeInUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        font-size: 15px; line-height: 1.6; color: var(--text-dim);
     }
 
     .check {
         flex-shrink: 0; width: 24px; height: 24px; margin-top: 2px;
         display: inline-flex; align-items: center; justify-content: center;
-        border-radius: 50%; background: rgba(46,204,113,0.12);
-        border: 1px solid rgba(46,204,113,0.3); color: var(--check-green);
-        font-size: 12px; font-weight: 700; line-height: 1;
-        box-shadow: 0 0 12px rgba(46,204,113,0.4);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50%;
+        background: rgba(67, 209, 124, 0.13);
+        border: 1px solid rgba(67, 209, 124, 0.38);
+        color: var(--check-green); font-size: 12px; font-weight: 700;
+        box-shadow: 0 0 14px rgba(67, 209, 124, 0.45); line-height: 1;
+        transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
     }
 
-    .card:hover .check { transform: scale(1.1); box-shadow: 0 0 24px rgba(46,204,113,0.8); }
-
-    .card__btn, .card__buy-btn {
-        display: block; width: 100%; padding: 16px 20px;
-        border: none; border-radius: 16px; font-family: inherit;
-        font-size: 14px; font-weight: 700; letter-spacing: 0.12em;
-        text-transform: uppercase; text-align: center; cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        position: relative; overflow: hidden;
-    }
+    .card:hover .check { transform: scale(1.1); box-shadow: 0 0 20px rgba(67, 209, 124, 0.6); }
+    .card--vip:hover .check { box-shadow: 0 0 20px rgba(255, 194, 51, 0.55); }
 
     .card__btn {
-        color: #fff; background: linear-gradient(135deg, #6a2bf2, #4d12e6);
-        box-shadow: 0 12px 32px -10px rgba(77,18,230,0.5);
+        display: block; width: 100%; padding: 16px 20px;
+        border: none; border-radius: 16px; font-family: inherit;
+        font-size: 14px; font-weight: 700; letter-spacing: 0.14em;
+        text-transform: uppercase; text-align: center; cursor: pointer;
+        color: #ffffff;
+        background: linear-gradient(135deg, #9d6bff 0%, #6d34f0 100%);
+        box-shadow: 0 10px 28px -12px rgba(109, 52, 240, 0.65);
+        transition: transform 0.25s var(--ease-out), box-shadow 0.25s ease, filter 0.25s ease;
+        margin-bottom: 14px;
     }
 
     .card__btn:hover {
-        transform: translateY(-2px); filter: brightness(1.1);
-        box-shadow: 0 16px 40px -10px rgba(77,18,230,0.7);
+        transform: translateY(-2px);
+        filter: brightness(1.08);
+        box-shadow: 0 16px 38px -12px rgba(109, 52, 240, 0.75);
     }
+    .card__btn:active { transform: translateY(0) scale(0.99); }
+    .card__btn:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.4); outline-offset: 2px; }
 
     .card__buy-btn {
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: var(--text-dim-strong); background: rgba(255, 255, 255, 0.03);
-        margin-top: 12px;
+        display: block; width: 100%; padding: 16px 20px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 16px; font-family: inherit;
+        font-size: 14px; font-weight: 700; letter-spacing: 0.14em;
+        text-transform: uppercase; text-align: center; text-decoration: none;
+        color: var(--text-dim-strong);
+        background: rgba(255, 255, 255, 0.045);
+        transition:
+            transform 0.25s var(--ease-out),
+            border-color 0.25s ease,
+            background 0.25s ease,
+            color 0.25s ease,
+            box-shadow 0.25s ease;
     }
 
     .card__buy-btn:hover {
-        border-color: rgba(255, 255, 255, 0.4);
-        background: rgba(255, 255, 255, 0.08); color: #fff;
-        box-shadow: 0 8px 28px -8px rgba(0, 0, 0, 0.4);
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.09);
+        color: #ffffff;
+        box-shadow: 0 10px 26px -8px rgba(0, 0, 0, 0.45);
+    }
+    .card__buy-btn:active { transform: translateY(0); }
+    .card__buy-btn:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.4); outline-offset: 2px; }
+
+    .card--vip .card__buy-btn {
+        border-color: rgba(255, 194, 51, 0.35);
+        color: var(--gold);
+        background: rgba(255, 194, 51, 0.07);
     }
 
-    /* Модальные окна */
+    .card--vip .card__buy-btn:hover {
+        border-color: rgba(255, 194, 51, 0.6);
+        background: rgba(255, 194, 51, 0.13);
+        color: #ffffff;
+        box-shadow: 0 10px 26px -8px rgba(255, 194, 51, 0.3);
+    }
+
+    /* ====== МОДАЛЬНЫЕ ОКНА ====== */
     .modal-overlay {
-        position: fixed; inset: 0; z-index: 1000;
-        background: rgba(8, 9, 13, 0.92); backdrop-filter: blur(20px);
-        display: flex; align-items: center; justify-content: center;
-        padding: 20px; opacity: 0; visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: rgba(9, 10, 15, 0.9);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.35s ease, visibility 0.35s ease;
     }
 
     .modal-overlay.active { opacity: 1; visibility: visible; }
 
     .modal-window {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(22, 25, 34, 0.92);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 32px; padding: 56px;
-        width: 100%; max-width: 720px; max-height: 90vh;
-        overflow-y: auto; position: relative;
-        transform: scale(0.9) translateY(30px);
-        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        box-shadow: 0 36px 80px -20px rgba(0, 0, 0, 0.7);
+        border-radius: 26px;
+        padding: 48px;
+        width: 100%;
+        max-width: 640px;
+        max-height: 85vh;
+        overflow-y: auto;
+        position: relative;
+        transform: translateY(26px) scale(0.96);
+        opacity: 0.6;
+        transition: transform 0.4s var(--ease-out), opacity 0.4s ease;
+        box-shadow: 0 34px 70px -24px rgba(0, 0, 0, 0.65);
     }
 
-    .modal-overlay.active .modal-window { transform: scale(1) translateY(0); }
+    .modal-overlay.active .modal-window { transform: translateY(0) scale(1); opacity: 1; }
+
+    /* Контент модалки появляется каскадом */
+    .modal-overlay.active .modal-title        { animation: fadeUp 0.5s var(--ease-out) 0.1s backwards; }
+    .modal-overlay.active .modal-subtitle     { animation: fadeUp 0.5s var(--ease-out) 0.18s backwards; }
+    .modal-overlay.active .modal-content      { animation: fadeUp 0.5s var(--ease-out) 0.26s backwards; }
+    .modal-overlay.active .skill-block        { animation: fadeUp 0.5s var(--ease-out) 0.34s backwards; }
+    .modal-overlay.active .skill-block:nth-child(even) { animation-delay: 0.42s; }
 
     .modal-close {
         position: absolute; top: 20px; right: 20px;
-        background: none; border: none; color: rgba(255,255,255,0.5);
-        font-size: 32px; cursor: pointer; line-height: 1;
-        transition: color 0.3s, transform 0.3s;
+        width: 40px; height: 40px;
+        display: flex; align-items: center; justify-content: center;
+        background: none; border: 1px solid transparent; border-radius: 50%;
+        color: rgba(255, 255, 255, 0.55); font-size: 30px;
+        cursor: pointer; line-height: 1; padding: 0;
+        transition: color 0.2s, background 0.2s, transform 0.2s;
     }
 
-    .modal-close:hover { color: #fff; transform: rotate(90deg); }
+    .modal-close:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.07);
+        transform: rotate(90deg);
+    }
+    .modal-close:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.4); }
 
     .modal-title {
-        font-size: 40px; font-weight: 800; margin-bottom: 16px;
-        text-align: center; text-transform: uppercase;
-        letter-spacing: 1px; color: #fff;
-        background: linear-gradient(135deg, #fff, #a0a5b0);
-        -webkit-background-clip: text; background-clip: text;
-        -webkit-text-fill-color: transparent;
+        font-size: 34px; font-weight: 800; margin-bottom: 16px;
+        text-align: center; text-transform: uppercase; letter-spacing: 1px;
+        color: #eef1f6;
+        background: linear-gradient(180deg, #ffffff, #b7bcc9);
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        padding-right: 32px;
     }
 
-    .modal-subtitle {
-        font-size: 16px; color: var(--text-dim); text-align: center;
-        margin-bottom: 36px;
-    }
+    .modal-subtitle { font-size: 16px; color: var(--text-dim); text-align: center; margin-bottom: 36px; }
 
-    .modal-content { color: var(--text-dim); line-height: 1.7; font-size: 16px; margin-bottom: 32px; }
-    .skill-block { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .modal-content { color: var(--text-dim); line-height: 1.75; font-size: 16px; margin-bottom: 32px; }
+
+    .skill-block { margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
     .skill-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .skill-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .skill-list { list-style: none; padding: 0; margin: 0; }
-    .skill-list li { position: relative; padding-left: 28px; margin-bottom: 12px; color: var(--text-dim); }
-    .skill-list li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--check-green); font-weight: bold; }
 
-    @keyframes fadeInUp {
-        to { opacity: 1; transform: translateY(0); }
+    .skill-title {
+        font-size: 19px; font-weight: 700; color: var(--text-main);
+        margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px;
     }
 
-    @media (max-width: 768px) {
-        .page { padding: 60px 16px; }
-        .pricing { grid-template-columns: 1fr; gap: 24px; }
-        .card { padding: 36px 24px; }
+    .skill-list { list-style: none; padding: 0; margin: 0; }
+
+    .skill-list li {
+        position: relative; padding-left: 30px; margin-bottom: 12px;
+        color: var(--text-dim); line-height: 1.6;
+    }
+
+    .skill-list li::before {
+        content: "✓";
+        position: absolute; left: 0; top: 0;
+        color: var(--check-green); font-weight: bold;
+    }
+
+    .modal-overlay.active::-webkit-scrollbar,
+    .modal-window::-webkit-scrollbar { width: 8px; }
+    .modal-window::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 8px; }
+
+    @media (max-width: 640px) {
+        .modal-window { padding: 34px 24px; }
+        .modal-title { font-size: 26px; }
+    }
+
+    @media (max-width: 767px) {
+        .page { padding: 64px 16px 80px; }
+        .pricing { grid-template-columns: 1fr; gap: 22px; }
+        .card { padding: 34px 28px 32px; }
         .card__price-value { font-size: 38px; }
-        .card__title { font-size: 20px; }
-        .modal-window { padding: 36px 24px; }
-        .modal-title { font-size: 30px; }
+        .card__title { font-size: 19px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        * { animation: none !important; transition: none !important; }
-        .glow { animation: none; }
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
     }
 </style>
 </head>
@@ -306,7 +501,7 @@
 
     <main class="page">
         <span class="page__eyebrow">Обучение монтажу и 3D-графике</span>
-        <h1 class="page__title">Тарифы</h1>
+        <h1 class="page__title">ТАРИФЫ</h1>
         <p class="page__subtitle">Выберите подходящий формат обучения — от базовых навыков до полного погружения в профессию.</p>
 
         <div class="pricing">
@@ -323,7 +518,7 @@
                 <ul class="card__features">
                     <li><span class="check">✓</span><span>Обучение всем азам в AE</span></li>
                     <li><span class="check">✓</span><span>Проекты, которые не попали в мой пак</span></li>
-                    <li><span class="check">✓</span><span>Сможете освоить базовые знания применения SFX\VFX</span></li>
+                    <li><span class="check">✓</span><span>Сможете освоить базовые знания применения SFX/VFX</span></li>
                     <li><span class="check">✓</span><span>Готовые уроки, по которым вы будете обучаться</span></li>
                 </ul>
                 <button class="card__btn" type="button" data-modal="modal-ae">Подробнее</button>
@@ -348,21 +543,38 @@
                 <a href="https://t.me/WHYDESCR1M" class="card__buy-btn" target="_blank" rel="noopener noreferrer">Приобрести тариф</a>
             </article>
 
+            <article class="card">
+                <div class="card__head">
+                    <h2 class="card__title">3Д Графика</h2>
+                </div>
+                <div class="card__price">
+                    <span class="card__price-value">15 000</span>
+                    <span class="card__price-currency">₽</span>
+                </div>
+                <div class="card__divider"></div>
+                <ul class="card__features">
+                    <li><span class="check">✓</span><span>Обучение базе в Blender</span></li>
+                    <li><span class="check">✓</span><span>Готовые уроки по моделированию</span></li>
+                    <li><span class="check">✓</span><span>Применение в AE</span></li>
+                </ul>
+                <button class="card__btn" type="button" data-modal="modal-3d">Подробнее</button>
+                <a href="https://t.me/WHYDESCR1M" class="card__buy-btn" target="_blank" rel="noopener noreferrer">Приобрести тариф</a>
+            </article>
+
             <article class="card card--vip">
                 <div class="card__head">
                     <h2 class="card__title">Все включено</h2>
                     <span class="card__badge">VIP</span>
                 </div>
                 <div class="card__price">
-                    <span class="card__price-value">25 000</span>
+                    <span class="card__price-value">24 000</span>
                     <span class="card__price-currency">₽</span>
                 </div>
                 <div class="card__divider"></div>
                 <ul class="card__features">
-                    <li><span class="check">✓</span><span>Все курсы: база AE, моушен, 3D-графика</span></li>
-                    <li><span class="check">✓</span><span>Личное сопровождение на всём пути обучения</span></li>
-                    <li><span class="check">✓</span><span>Помощь в выходе на первого клиента</span></li>
-                    <li><span class="check">✓</span><span>Приоритетная поддержка в Telegram</span></li>
+                    <li><span class="check">✓</span><span>Получите все перечисленное выше</span></li>
+                    <li><span class="check">✓</span><span>Постоянная связь со мной</span></li>
+                    <li><span class="check">✓</span><span>Также помогу выйти на 1 клиента</span></li>
                 </ul>
                 <button class="card__btn" type="button" data-modal="modal-vip">Подробнее</button>
                 <a href="https://t.me/WHYDESCR1M" class="card__buy-btn" target="_blank" rel="noopener noreferrer">Приобрести тариф</a>
@@ -371,132 +583,188 @@
         </div>
     </main>
 
-    <!-- Модальные окна -->
-    <div class="modal-overlay" id="modal-ae">
+    <!-- МОДАЛЬНОЕ ОКНО: БАЗА АЕ -->
+    <div id="modal-ae" class="modal-overlay">
         <div class="modal-window">
-            <button class="modal-close" type="button">&times;</button>
+            <button class="modal-close" aria-label="Закрыть">&times;</button>
             <h2 class="modal-title">База АЕ</h2>
-            <p class="modal-subtitle">Полный старт в After Effects для новичков</p>
+            <p class="modal-subtitle">Курс для новичков в After Effects</p>
             <div class="modal-content">
-                <p>Этот тариф создан для тех, кто только начинает свой путь в моушен-дизайне. Вы получите фундаментальные знания по работе в After Effects, научитесь создавать базовые анимации и визуальные эффекты.</p>
+                <p>Данный курс создан для совсем новичков в программе под названием After Effects. Здесь вы познакомитесь с азами этой прекрасной программы и сразу после 1 видео-урока сможете выполнить ДЗ, которое я лично проверю.</p>
             </div>
             <div class="skill-block">
-                <h3 class="skill-title">Что вы освоите</h3>
+                <div class="skill-title">Базовая композиция и первые сцены</div>
                 <ul class="skill-list">
-                    <li>Интерфейс и навигация в AE</li>
-                    <li>Работа со слоями и таймлайном</li>
-                    <li>Базовые эффекты и пресеты</li>
-                    <li>Экспорт и оптимизация проектов</li>
+                    <li>Создавать приятные глазу композиции и сцены</li>
                 </ul>
             </div>
             <div class="skill-block">
-                <h3 class="skill-title">Материалы</h3>
+                <div class="skill-title">Камеры</div>
                 <ul class="skill-list">
-                    <li>15+ видеоуроков</li>
-                    <li>Шаблоны проектов</li>
-                    <li>Чек-листы и шпаргалки</li>
+                    <li>Освоите 3D-пространство в AE и работу с камерами</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Анимации</div>
+                <ul class="skill-list">
+                    <li>Научитесь базовой анимации объектов и расстановке ключей</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modal-mo">
+    <!-- МОДАЛЬНОЕ ОКНО: МОУШЕН -->
+    <div id="modal-mo" class="modal-overlay">
         <div class="modal-window">
-            <button class="modal-close" type="button">&times;</button>
+            <button class="modal-close" aria-label="Закрыть">&times;</button>
             <h2 class="modal-title">Моушен</h2>
-            <p class="modal-subtitle">Углубленное изучение моушен-дизайна</p>
+            <p class="modal-subtitle">Продвинутая база в After Effects, 2 месяца обучения</p>
             <div class="modal-content">
-                <p>Тариф для тех, кто хочет выйти на профессиональный уровень. Вы изучите продвинутые техники анимации, работу с клиентами и построение личного бренда.</p>
+                <p>Данный курс будет проходить в формате онлайн, где я вас буду обучать продвинутой базе в After Effects. Курс будет идти 2 месяца.</p>
             </div>
             <div class="skill-block">
-                <h3 class="skill-title">Что вы освоите</h3>
+                <div class="skill-title">Текст</div>
                 <ul class="skill-list">
-                    <li>Продвинутая анимация в AE</li>
-                    <li>Работа с 3D-элементами</li>
-                    <li>Создание шоурила</li>
-                    <li>Стратегии поиска клиентов</li>
+                    <li>Работать с текстом на высоком уровне</li>
                 </ul>
             </div>
             <div class="skill-block">
-                <h3 class="skill-title">Материалы</h3>
+                <div class="skill-title">3D</div>
                 <ul class="skill-list">
-                    <li>20+ видеоуроков</li>
-                    <li>Разбор реальных проектов</li>
-                    <li>Гайды по продвижению</li>
+                    <li>Получите высокий уровень работы с 3D-пространством и камерой</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Анимации</div>
+                <ul class="skill-list">
+                    <li>Обновлённая версия анимации объектов</li>
+                    <li>Добавление анимации персонажей</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modal-vip">
+    <!-- МОДАЛЬНОЕ ОКНО: 3D ГРАФИКА (CGI) -->
+    <div id="modal-3d" class="modal-overlay">
         <div class="modal-window">
-            <button class="modal-close" type="button">&times;</button>
-            <h2 class="modal-title">Все включено</h2>
-            <p class="modal-subtitle">Максимальный формат обучения с личным сопровождением</p>
+            <button class="modal-close" aria-label="Закрыть">&times;</button>
+            <h2 class="modal-title">3D Графика (CGI)</h2>
+            <p class="modal-subtitle">Полное обучение азам 3D в Blender и применение в AE</p>
             <div class="modal-content">
-                <p>Полный пакет для быстрого старта в профессии. Вы получите доступ ко всем курсам, персональную поддержку и помощь в поиске первого клиента.</p>
+                <p>Полное обучение азам 3D в Blender и способы применения 3D-моделей в After Effects.</p>
             </div>
             <div class="skill-block">
-                <h3 class="skill-title">Что вы освоите</h3>
+                <div class="skill-title">Основа</div>
                 <ul class="skill-list">
-                    <li>Все модули из тарифов «База АЕ» и «Моушен»</li>
-                    <li>Основы 3D-графики и рендера</li>
-                    <li>Комплексное создание проектов</li>
-                    <li>Стратегия развития карьеры</li>
+                    <li>Изучите интерфейс Blender</li>
                 </ul>
             </div>
             <div class="skill-block">
-                <h3 class="skill-title">Материалы</h3>
+                <div class="skill-title">Моделирование</div>
                 <ul class="skill-list">
-                    <li>Все видеоуроки из других тарифов</li>
-                    <li>Эксклюзивные мастер-классы</li>
-                    <li>Персональные консультации</li>
-                    <li>Помощь в выходе на первого клиента</li>
+                    <li>Сможете сделать свою первую 3D-модель и закинуть её в AE</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Анимации и риггинг</div>
+                <ul class="skill-list">
+                    <li>Научитесь работать с окружением и персонажем</li>
                 </ul>
             </div>
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО: ВСЕ ВКЛЮЧЕНО (VIP) -->
+    <div id="modal-vip" class="modal-overlay">
+        <div class="modal-window">
+            <button class="modal-close" aria-label="Закрыть">&times;</button>
+            <h2 class="modal-title">Все включено</h2>
+            <p class="modal-subtitle">Максимальный формат обучения</p>
+            <div class="modal-content">
+                <p>Этот тариф объединяет все курсы: базу AE, моушен-дизайн и 3D-графику — плюс личное сопровождение на всём пути обучения.</p>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Все курсы</div>
+                <ul class="skill-list">
+                    <li>Получите все перечисленное выше</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Личная связь</div>
+                <ul class="skill-list">
+                    <li>Постоянная связь со мной</li>
+                </ul>
+            </div>
+            <div class="skill-block">
+                <div class="skill-title">Первый клиент</div>
+                <ul class="skill-list">
+                    <li>Также помогу выйти на 1 клиента</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЛОГИКА МОДАЛОК: чистый JS, без jQuery -->
     <script>
-        const rippleLayer = document.getElementById('ripple');
-        const modals = document.querySelectorAll('.modal-overlay');
-        const buttons = document.querySelectorAll('[data-modal]');
-        const closeButtons = document.querySelectorAll('.modal-close');
+        document.addEventListener('DOMContentLoaded', function() {
+            var buttons = document.querySelectorAll('[data-modal]');
 
-        // Ripple эффект
-        rippleLayer.addEventListener('click', (e) => {
-            const ripple = document.createElement('div');
-            ripple.classList.add('ripple');
-            ripple.style.left = `\${e.clientX - rippleLayer.offsetLeft}px`;
-            ripple.style.top = `\${e.clientY - rippleLayer.offsetTop}px`;
-            rippleLayer.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-        });
+            function openModal(id) {
+                var modal = document.getElementById(id);
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
 
-        // Открытие модальных окон
-        buttons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const modalId = btn.getAttribute('data-modal');
-                const modal = document.getElementById(modalId);
-                if (modal) modal.classList.add('active');
+            function closeModal(modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            buttons.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal(this.getAttribute('data-modal'));
+                });
             });
-        });
 
-        // Закрытие модальных окон
-        [...closeButtons, ...modals].forEach(el => {
-            el.addEventListener('click', (e) => {
-                if (e.target === el || e.target.closest('.modal-close')) {
-                    modals.forEach(m => m.classList.remove('active'));
+            document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+                var closeBtn = overlay.querySelector('.modal-close');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        closeModal(overlay);
+                    });
+                }
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) closeModal(overlay);
+                });
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    var active = document.querySelector('.modal-overlay.active');
+                    if (active) closeModal(active);
                 }
             });
         });
+    </script>
 
-        // Плавная прокрутка к заголовку при клике на фон
-        document.body.addEventListener('click', (e) => {
-            if (e.target === document.body) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        });
+    <!-- РЯБЬ: если jQuery не загрузился, остальное всё равно работает -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
+    <script>
+        if (window.jQuery && window.jQuery.fn.ripples) {
+            $(document).ready(function() {
+                $('#ripple').ripples({
+                    resolution: 512,
+                    dropRadius: 20,
+                    perturbance: 0.04,
+                    interactive: true
+                });
+            });
+        }
     </script>
 </body>
 </html>
