@@ -65,6 +65,7 @@
         z-index: 9999;
         transform: translate(-50%, -50%);
         box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+        will-change: transform;
     }
 
     .ripple-layer {
@@ -930,85 +931,73 @@
         });
     </script>
 
-    <!-- КАСТОМНЫЙ КУРСОР СО ШЛЕЙФОМ -->
+    <!-- КАСТОМНЫЙ КУРСОР СО ШЛЕЙФОМ (исправленная версия) -->
     <script>
     (function() {
         // Не запускаем на тач-устройствах — там нет курсора
         if (window.matchMedia('(pointer: coarse)').matches) return;
 
         var cursor = document.getElementById('custom-cursor');
-        var trailLength = 20; // количество сегментов шлейфа
-        var trailFade = 0.85; // множитель прозрачности для каждого следующего сегмента
-        var trailSize = 12;   // размер сегмента шлейфа
+        var TRAIL_LENGTH = 20; // длина шлейфа в сегментах
+        var trailSize = 12;
         var trailColor = 'rgba(255, 255, 255, 0.35)';
 
-        var mouseX = 0;
-        var mouseY = 0;
-        var trail = [];
+        var mouseX = 0, mouseY = 0;
+        var history = [];   // история позиций мыши: [0] — самая свежая
+        var segments = [];
+        var lastMoveTime = 0;
 
-        function lerp(a, b, t) {
-            return a + (b - a) * t;
-        }
-
-        function update() {
-            // двигаем основной курсор
-            cursor.style.transform = 'translate(' + mouseX + 'px, ' + mouseY + 'px) translate(-50%, -50%)';
-
-            // обновляем позиции шлейфа
-            for (var i = 0; i < trail.length; i++) {
-                var segment = trail[i];
-                var t = i / trailLength;
-                var x = lerp(segment.prevX, mouseX, t);
-                var y = lerp(segment.prevY, mouseY, t);
-
-                segment.element.style.transform = 'translate(' + x + 'px, ' + y + 'px) translate(-50%, -50%)';
-                segment.prevX = x;
-                segment.prevY = y;
-
-                // затухание
-                segment.opacity *= trailFade;
-                segment.element.style.opacity = segment.opacity;
-
-                if (segment.opacity < 0.01) {
-                    segment.element.remove();
-                    trail.splice(i, 1);
-                    i--;
-                }
-            }
-
-            requestAnimationFrame(update);
-        }
-
-        function createTrailSegment() {
+        // создаём пул сегментов один раз, дальше переиспользуем
+        for (var i = 0; i < TRAIL_LENGTH; i++) {
             var el = document.createElement('div');
             el.style.position = 'fixed';
+            el.style.top = '0';
+            el.style.left = '0';
             el.style.width = trailSize + 'px';
             el.style.height = trailSize + 'px';
             el.style.background = trailColor;
             el.style.borderRadius = '50%';
             el.style.pointerEvents = 'none';
             el.style.zIndex = '9998';
-            el.style.opacity = '1';
+            el.style.opacity = '0';
+            el.style.willChange = 'transform, opacity';
             document.body.appendChild(el);
-
-            trail.push({
-                element: el,
-                prevX: mouseX,
-                prevY: mouseY,
-                opacity: 1
-            });
-
-            if (trail.length > trailLength) {
-                var old = trail.shift();
-                old.element.remove();
-            }
+            segments.push(el);
         }
 
         document.addEventListener('mousemove', function(e) {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            createTrailSegment();
+            history.unshift({ x: mouseX, y: mouseY });
+            if (history.length > TRAIL_LENGTH) history.pop();
+            lastMoveTime = performance.now();
         });
+
+        function update() {
+            // основной курсор
+            cursor.style.transform = 'translate(' + mouseX + 'px,' + mouseY + 'px) translate(-50%,-50%)';
+
+            // если мышь остановилась — постепенно гасим шлейф
+            if (performance.now() - lastMoveTime > 60 && history.length > 0) {
+                history.pop();
+            }
+
+            // сегмент i показывает, где мышь была i кадров назад
+            for (var i = 0; i < segments.length; i++) {
+                var seg = segments[i];
+                var point = history[i];
+
+                if (point) {
+                    var t = i / TRAIL_LENGTH; // 0 — у курсора, 1 — хвост
+                    seg.style.transform = 'translate(' + point.x + 'px,' + point.y + 'px) translate(-50%,-50%) scale(' + (1 - t * 0.6) + ')';
+                    seg.style.opacity = (1 - t) * 0.55;
+                } else {
+                    seg.style.opacity = '0';
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
 
         update();
     })();
