@@ -31,6 +31,11 @@
         --radius-card: 24px;
     }
 
+    /* Резервируем место под скроллбар — модалка не сдвигает интерфейс */
+    html {
+        scrollbar-gutter: stable;
+    }
+
     body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         background-color: var(--bg);
@@ -39,6 +44,27 @@
         overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
+        cursor: none; /* скрываем стандартный курсор */
+    }
+
+    /* Кастомный курсор должен работать и на кликабельных элементах */
+    a, button, .card__btn, .card__buy-btn, .cta__btn, .modal-close {
+        cursor: none;
+    }
+
+    /* ====== КАСТОМНЫЙ КУРСОР ====== */
+    #custom-cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        background: #ffffff;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
     }
 
     .ripple-layer {
@@ -597,6 +623,10 @@
         .card__title { font-size: 19px; }
         .card__flag { font-size: 9px; }
         .cta { margin-top: 56px; }
+
+        /* На тач-устройствах кастомный курсор не нужен — возвращаем стандартный */
+        body, a, button { cursor: auto; }
+        #custom-cursor { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -614,6 +644,9 @@
     <div class="bg-grid" aria-hidden="true"></div>
     <div class="glow glow--purple" aria-hidden="true"></div>
     <div class="glow glow--teal" aria-hidden="true"></div>
+
+    <!-- КАСТОМНЫЙ КУРСОР -->
+    <div id="custom-cursor"></div>
 
     <main class="page">
         <span class="page__eyebrow">Обучение монтажу и 3D-графике</span>
@@ -852,6 +885,11 @@
             function openModal(id) {
                 var modal = document.getElementById(id);
                 if (modal) {
+                    // компенсируем ширину исчезающего скроллбара
+                    var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+                    if (scrollbarWidth > 0) {
+                        document.body.style.paddingRight = scrollbarWidth + 'px';
+                    }
                     modal.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 }
@@ -860,6 +898,7 @@
             function closeModal(modal) {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
             }
 
             buttons.forEach(function(btn) {
@@ -889,6 +928,90 @@
                 }
             });
         });
+    </script>
+
+    <!-- КАСТОМНЫЙ КУРСОР СО ШЛЕЙФОМ -->
+    <script>
+    (function() {
+        // Не запускаем на тач-устройствах — там нет курсора
+        if (window.matchMedia('(pointer: coarse)').matches) return;
+
+        var cursor = document.getElementById('custom-cursor');
+        var trailLength = 20; // количество сегментов шлейфа
+        var trailFade = 0.85; // множитель прозрачности для каждого следующего сегмента
+        var trailSize = 12;   // размер сегмента шлейфа
+        var trailColor = 'rgba(255, 255, 255, 0.35)';
+
+        var mouseX = 0;
+        var mouseY = 0;
+        var trail = [];
+
+        function lerp(a, b, t) {
+            return a + (b - a) * t;
+        }
+
+        function update() {
+            // двигаем основной курсор
+            cursor.style.transform = 'translate(' + mouseX + 'px, ' + mouseY + 'px) translate(-50%, -50%)';
+
+            // обновляем позиции шлейфа
+            for (var i = 0; i < trail.length; i++) {
+                var segment = trail[i];
+                var t = i / trailLength;
+                var x = lerp(segment.prevX, mouseX, t);
+                var y = lerp(segment.prevY, mouseY, t);
+
+                segment.element.style.transform = 'translate(' + x + 'px, ' + y + 'px) translate(-50%, -50%)';
+                segment.prevX = x;
+                segment.prevY = y;
+
+                // затухание
+                segment.opacity *= trailFade;
+                segment.element.style.opacity = segment.opacity;
+
+                if (segment.opacity < 0.01) {
+                    segment.element.remove();
+                    trail.splice(i, 1);
+                    i--;
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        function createTrailSegment() {
+            var el = document.createElement('div');
+            el.style.position = 'fixed';
+            el.style.width = trailSize + 'px';
+            el.style.height = trailSize + 'px';
+            el.style.background = trailColor;
+            el.style.borderRadius = '50%';
+            el.style.pointerEvents = 'none';
+            el.style.zIndex = '9998';
+            el.style.opacity = '1';
+            document.body.appendChild(el);
+
+            trail.push({
+                element: el,
+                prevX: mouseX,
+                prevY: mouseY,
+                opacity: 1
+            });
+
+            if (trail.length > trailLength) {
+                var old = trail.shift();
+                old.element.remove();
+            }
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            createTrailSegment();
+        });
+
+        update();
+    })();
     </script>
 
     <!-- РЯБЬ: если jQuery не загрузился, остальное всё равно работает -->
